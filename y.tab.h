@@ -1,0 +1,56 @@
+typedef union{
+	struct gramTree* gt;
+} YYSTYPE;
+#define	IDENTIFIER	257
+#define	CONSTANT	258
+#define	STRING_LITERAL	259
+#define	SIZEOF	260
+#define	CONSTANT_INT	261
+#define	CONSTANT_DOUBLE	262
+#define	PTR_OP	263
+#define	INC_OP	264
+#define	DEC_OP	265
+#define	LEFT_OP	266
+#define	RIGHT_OP	267
+#define	LE_OP	268
+#define	GE_OP	269
+#define	EQ_OP	270
+#define	NE_OP	271
+#define	AND_OP	272
+#define	OR_OP	273
+#define	MUL_ASSIGN	274
+#define	DIV_ASSIGN	275
+#define	MOD_ASSIGN	276
+#define	ADD_ASSIGN	277
+#define	SUB_ASSIGN	278
+#define	LEFT_ASSIGN	279
+#define	RIGHT_ASSIGN	280
+#define	AND_ASSIGN	281
+#define	XOR_ASSIGN	282
+#define	OR_ASSIGN	283
+#define	TYPE_NAME	284
+#define	CHAR	285
+#define	INT	286
+#define	DOUBLE	287
+#define	CONST	288
+#define	VOID	289
+#define	BOOL	290
+#define	STRUCT	291
+#define	UNION	292
+#define	ENUM	293
+#define	ELLIPSIS	294
+#define	CASE	295
+#define	IF	296
+#define	ELSE	297
+#define	SWITCH	298
+#define	WHILE	299
+#define	DO	300
+#define	FOR	301
+#define	GOTO	302
+#define	CONTINUE	303
+#define	BREAK	304
+#define	RETURN	305
+#define	LOWER_THAN_ELSE	306
+
+
+extern YYSTYPE yylval;
