@@ -2,13 +2,17 @@
 
 #define _TREE_H_
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include<stdarg.h>
-extern char * yytext;
+#include<cstdio>
+#include<cstdlib>
+#include<cstring>
+#include<cstdarg>
+#include<iostream>
+#include<string>
+using namespace std;
+extern char *yytext;
 extern int yylineno;//提供当前行数信息
-struct gramTree *root;
+extern struct gramTree *root;
+
 
 struct gramTree {
     char* content;
@@ -22,7 +26,7 @@ struct gramTree {
     char *string_value;
 };
 
-struct gramTree* create_tree(char* name, int num,...);
+struct gramTree* create_tree(string name, int num,...);
 void eval(struct gramTree *head,int leavel);
 char* my_substring(char* s, int begin, int end);
 

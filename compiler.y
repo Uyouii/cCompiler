@@ -1,13 +1,14 @@
 %{
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
+#include <string>
 #include "tree.h"
 
 extern char *yytext;
 extern int column;
 extern FILE * yyin;
 extern FILE * yyout;
-extern struct gramTree	*root;
+struct gramTree *root;
 extern int yylineno;
 
 int yylex(void);
@@ -54,14 +55,14 @@ void yyerror(const char*);
 
 Program: 
 	translation_unit {
-		root = create_tree("Program",1,$1);
+		root = create_tree(string("Program").c_str(),1,$1);
 	}
 	;
 
 /*基本表达式*/
 primary_expression: 
 	IDENTIFIER {
-		$$ = create_tree("primary_expression",1,$1);
+		$$ = create_tree(string("primary_expression").c_str(),1,$1);
 	}
 	| CONSTANT{
 		

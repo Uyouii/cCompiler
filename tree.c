@@ -1,6 +1,8 @@
 #include"tree.h"
 
-struct gramTree* create_tree(char* name, int num,...) {
+
+struct gramTree* create_tree(string Name, int num,...) {
+    const char* name = Name.c_str();
     va_list valist;
     struct gramTree* head = (struct gramTree* )malloc(sizeof(struct gramTree));
     if(!head) {
@@ -11,7 +13,8 @@ struct gramTree* create_tree(char* name, int num,...) {
     head->right = NULL;
     head->content = NULL;
     struct gramTree* temp = NULL;
-    head->name = name;
+    head->name = (char*)malloc(strlen(name) + 1);
+    strcpy(head->name,name);
     va_start(valist,num);
     if(num > 0) {
         temp = va_arg(valist,struct gramTree*);

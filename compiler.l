@@ -1,10 +1,12 @@
 
 %{
 #include "y.tab.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include "tree.h"
+#include <iostream>
+using namespace std;
 
 void count(void);
 void comment();
@@ -125,8 +127,8 @@ int yywrap() {
 void comment() {
 	column = 0;
 	char c, prev = 0;
-  
-	while ((c = input()) != 0)      /* (EOF maps to 0) */
+	
+	while (cin >> c)      /* (EOF maps to 0) */
 	{
 		if (c == '/' && prev == '*')
 			return;
