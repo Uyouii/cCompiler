@@ -1,0 +1,398 @@
+char* my_substring(char* s, int begin, int end) {
+    char* result = (char*)malloc(end - begin + 1);
+    int i;
+    for(i = begin; i < end; i++) {
+        result[i - begin] = s[i];
+    }
+    result[i - begin] = 0;
+    return result;
+}
+Program <1>
+| translation <1>
+| | external_declaration <1>
+| | | external_declaration <1>
+| | | | declaration_specifiers <1>
+| | | | | type_specifier <1>
+| | | | | | CHAR:char
+| | | | declarator <1>
+| | | | | pointer <1>
+| | | | | | * <1>
+| | | | | direct_declarator <1>
+| | | | | | direct_declarator <1>
+| | | | | | | IDENTIFIER:my_substring
+| | | | | | ( <1>
+| | | | | | parameter_list <1>
+| | | | | | | parameter_list <1>
+| | | | | | | | parameter_list <1>
+| | | | | | | | | parameter_declaration <1>
+| | | | | | | | | | declaration_specifiers <1>
+| | | | | | | | | | | type_specifier <1>
+| | | | | | | | | | | | CHAR:char
+| | | | | | | | | | declarator <1>
+| | | | | | | | | | | pointer <1>
+| | | | | | | | | | | | * <1>
+| | | | | | | | | | | direct_declarator <1>
+| | | | | | | | | | | | IDENTIFIER:s
+| | | | | | | | , <1>
+| | | | | | | | parameter_declaration <1>
+| | | | | | | | | declaration_specifiers <1>
+| | | | | | | | | | type_specifier <1>
+| | | | | | | | | | | INT:int
+| | | | | | | | | declarator <1>
+| | | | | | | | | | direct_declarator <1>
+| | | | | | | | | | | IDENTIFIER:begin
+| | | | | | | , <1>
+| | | | | | | parameter_declaration <1>
+| | | | | | | | declaration_specifiers <1>
+| | | | | | | | | type_specifier <1>
+| | | | | | | | | | INT:int
+| | | | | | | | declarator <1>
+| | | | | | | | | direct_declarator <1>
+| | | | | | | | | | IDENTIFIER:end
+| | | | | | ) <1>
+| | | | compound_statement <1>
+| | | | | { <1>
+| | | | | block_item_list <2>
+| | | | | | block_item_list <2>
+| | | | | | | block_item_list <2>
+| | | | | | | | block_item_list <2>
+| | | | | | | | | block_item_list <2>
+| | | | | | | | | | block_item <2>
+| | | | | | | | | | | declaration <2>
+| | | | | | | | | | | | declaration_specifiers <2>
+| | | | | | | | | | | | | type_specifier <2>
+| | | | | | | | | | | | | | CHAR:char
+| | | | | | | | | | | | init_declarator_list <2>
+| | | | | | | | | | | | | init_declarator <2>
+| | | | | | | | | | | | | | declarator <2>
+| | | | | | | | | | | | | | | pointer <2>
+| | | | | | | | | | | | | | | | * <2>
+| | | | | | | | | | | | | | | direct_declarator <2>
+| | | | | | | | | | | | | | | | IDENTIFIER:result
+| | | | | | | | | | | | | | = <2>
+| | | | | | | | | | | | | | initializer <2>
+| | | | | | | | | | | | | | | assignment_expression <2>
+| | | | | | | | | | | | | | | | conditional_expression <2>
+| | | | | | | | | | | | | | | | | logical_or_expression <2>
+| | | | | | | | | | | | | | | | | | logical_and_expression <2>
+| | | | | | | | | | | | | | | | | | | inclusive_or_expression <2>
+| | | | | | | | | | | | | | | | | | | | exclusive_or_expression <2>
+| | | | | | | | | | | | | | | | | | | | | and_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | equality_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | relational_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | shift_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | additive_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | multiplicative_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | cast_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | ( <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | type_name <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | specifier_qualifier_list <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | type_specifier <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | CHAR:char
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | abstract_declarator <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | pointer <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | * <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | ) <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | cast_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | unary_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | postfix_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | postfix_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | primary_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | IDENTIFIER:malloc
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | ( <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | argument_expression_list <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | assignment_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | conditional_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | logical_or_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | logical_and_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | inclusive_or_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | exclusive_or_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | and_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | equality_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | relational_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | shift_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | additive_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | additive_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | additive_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | multiplicative_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | cast_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | unary_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | postfix_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | primary_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | IDENTIFIER:end
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | - <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | multiplicative_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | cast_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | unary_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | postfix_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | primary_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | IDENTIFIER:begin
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | + <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | multiplicative_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | cast_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | unary_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | postfix_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | primary_expression <2>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | CONSTANT_INT:1 
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | ) <2>
+| | | | | | | | | | | | ; <2>
+| | | | | | | | | block_item <3>
+| | | | | | | | | | declaration <3>
+| | | | | | | | | | | declaration_specifiers <3>
+| | | | | | | | | | | | type_specifier <3>
+| | | | | | | | | | | | | INT:int
+| | | | | | | | | | | init_declarator_list <3>
+| | | | | | | | | | | | init_declarator <3>
+| | | | | | | | | | | | | declarator <3>
+| | | | | | | | | | | | | | direct_declarator <3>
+| | | | | | | | | | | | | | | IDENTIFIER:i
+| | | | | | | | | | | ; <3>
+| | | | | | | | block_item <4>
+| | | | | | | | | statement <4>
+| | | | | | | | | | iteration_statement <4>
+| | | | | | | | | | | FOR <4>
+| | | | | | | | | | | ( <4>
+| | | | | | | | | | | expression_statement <4>
+| | | | | | | | | | | | expression <4>
+| | | | | | | | | | | | | assignment_expression <4>
+| | | | | | | | | | | | | | unary_expression <4>
+| | | | | | | | | | | | | | | postfix_expression <4>
+| | | | | | | | | | | | | | | | primary_expression <4>
+| | | | | | | | | | | | | | | | | IDENTIFIER:i
+| | | | | | | | | | | | | | assignment_operator <4>
+| | | | | | | | | | | | | | | = <4>
+| | | | | | | | | | | | | | assignment_expression <4>
+| | | | | | | | | | | | | | | conditional_expression <4>
+| | | | | | | | | | | | | | | | logical_or_expression <4>
+| | | | | | | | | | | | | | | | | logical_and_expression <4>
+| | | | | | | | | | | | | | | | | | inclusive_or_expression <4>
+| | | | | | | | | | | | | | | | | | | exclusive_or_expression <4>
+| | | | | | | | | | | | | | | | | | | | and_expression <4>
+| | | | | | | | | | | | | | | | | | | | | equality_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | relational_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | shift_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | additive_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | | multiplicative_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | | | cast_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | unary_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | postfix_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | primary_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | IDENTIFIER:begin
+| | | | | | | | | | | | ; <4>
+| | | | | | | | | | | expression_statement <4>
+| | | | | | | | | | | | expression <4>
+| | | | | | | | | | | | | assignment_expression <4>
+| | | | | | | | | | | | | | conditional_expression <4>
+| | | | | | | | | | | | | | | logical_or_expression <4>
+| | | | | | | | | | | | | | | | logical_and_expression <4>
+| | | | | | | | | | | | | | | | | inclusive_or_expression <4>
+| | | | | | | | | | | | | | | | | | exclusive_or_expression <4>
+| | | | | | | | | | | | | | | | | | | and_expression <4>
+| | | | | | | | | | | | | | | | | | | | equality_expression <4>
+| | | | | | | | | | | | | | | | | | | | | relational_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | relational_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | shift_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | additive_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | | multiplicative_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | | | cast_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | unary_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | postfix_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | primary_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | IDENTIFIER:i
+| | | | | | | | | | | | | | | | | | | | | | < <4>
+| | | | | | | | | | | | | | | | | | | | | | shift_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | additive_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | multiplicative_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | | cast_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | | | unary_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | postfix_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | primary_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | IDENTIFIER:end
+| | | | | | | | | | | | ; <4>
+| | | | | | | | | | | expression <4>
+| | | | | | | | | | | | assignment_expression <4>
+| | | | | | | | | | | | | conditional_expression <4>
+| | | | | | | | | | | | | | logical_or_expression <4>
+| | | | | | | | | | | | | | | logical_and_expression <4>
+| | | | | | | | | | | | | | | | inclusive_or_expression <4>
+| | | | | | | | | | | | | | | | | exclusive_or_expression <4>
+| | | | | | | | | | | | | | | | | | and_expression <4>
+| | | | | | | | | | | | | | | | | | | equality_expression <4>
+| | | | | | | | | | | | | | | | | | | | relational_expression <4>
+| | | | | | | | | | | | | | | | | | | | | shift_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | additive_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | multiplicative_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | cast_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | | unary_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | | | postfix_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | postfix_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | primary_expression <4>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | IDENTIFIER:i
+| | | | | | | | | | | | | | | | | | | | | | | | | | | INC_OP <4>
+| | | | | | | | | | | ) <4>
+| | | | | | | | | | | statement <4>
+| | | | | | | | | | | | compound_statement <4>
+| | | | | | | | | | | | | { <4>
+| | | | | | | | | | | | | block_item_list <5>
+| | | | | | | | | | | | | | block_item <5>
+| | | | | | | | | | | | | | | statement <5>
+| | | | | | | | | | | | | | | | expression_statement <5>
+| | | | | | | | | | | | | | | | | expression <5>
+| | | | | | | | | | | | | | | | | | assignment_expression <5>
+| | | | | | | | | | | | | | | | | | | unary_expression <5>
+| | | | | | | | | | | | | | | | | | | | postfix_expression <5>
+| | | | | | | | | | | | | | | | | | | | | postfix_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | primary_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | IDENTIFIER:result
+| | | | | | | | | | | | | | | | | | | | | [ <5>
+| | | | | | | | | | | | | | | | | | | | | expression <5>
+| | | | | | | | | | | | | | | | | | | | | | assignment_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | conditional_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | logical_or_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | logical_and_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | inclusive_or_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | exclusive_or_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | and_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | equality_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | relational_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | shift_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | additive_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | additive_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | multiplicative_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | cast_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | unary_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | postfix_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | primary_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | IDENTIFIER:i
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | - <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | multiplicative_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | cast_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | unary_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | postfix_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | primary_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | IDENTIFIER:begin
+| | | | | | | | | | | | | | | | | | | | | ] <5>
+| | | | | | | | | | | | | | | | | | | assignment_operator <5>
+| | | | | | | | | | | | | | | | | | | | = <5>
+| | | | | | | | | | | | | | | | | | | assignment_expression <5>
+| | | | | | | | | | | | | | | | | | | | conditional_expression <5>
+| | | | | | | | | | | | | | | | | | | | | logical_or_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | logical_and_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | inclusive_or_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | exclusive_or_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | and_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | equality_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | relational_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | shift_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | additive_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | multiplicative_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | cast_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | unary_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | postfix_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | postfix_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | primary_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | IDENTIFIER:s
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | [ <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | assignment_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | conditional_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | logical_or_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | logical_and_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | inclusive_or_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | exclusive_or_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | and_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | equality_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | relational_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | shift_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | additive_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | multiplicative_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | cast_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | unary_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | postfix_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | primary_expression <5>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | IDENTIFIER:i
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | ] <5>
+| | | | | | | | | | | | | | | | | ; <5>
+| | | | | | | | | | | | | } <6>
+| | | | | | | block_item <7>
+| | | | | | | | statement <7>
+| | | | | | | | | expression_statement <7>
+| | | | | | | | | | expression <7>
+| | | | | | | | | | | assignment_expression <7>
+| | | | | | | | | | | | unary_expression <7>
+| | | | | | | | | | | | | postfix_expression <7>
+| | | | | | | | | | | | | | postfix_expression <7>
+| | | | | | | | | | | | | | | primary_expression <7>
+| | | | | | | | | | | | | | | | IDENTIFIER:result
+| | | | | | | | | | | | | | [ <7>
+| | | | | | | | | | | | | | expression <7>
+| | | | | | | | | | | | | | | assignment_expression <7>
+| | | | | | | | | | | | | | | | conditional_expression <7>
+| | | | | | | | | | | | | | | | | logical_or_expression <7>
+| | | | | | | | | | | | | | | | | | logical_and_expression <7>
+| | | | | | | | | | | | | | | | | | | inclusive_or_expression <7>
+| | | | | | | | | | | | | | | | | | | | exclusive_or_expression <7>
+| | | | | | | | | | | | | | | | | | | | | and_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | equality_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | | relational_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | | | shift_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | | | | additive_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | | | | | additive_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | multiplicative_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | cast_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | unary_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | postfix_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | primary_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | IDENTIFIER:i
+| | | | | | | | | | | | | | | | | | | | | | | | | | - <7>
+| | | | | | | | | | | | | | | | | | | | | | | | | | multiplicative_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | cast_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | unary_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | postfix_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | primary_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | IDENTIFIER:begin
+| | | | | | | | | | | | | | ] <7>
+| | | | | | | | | | | | assignment_operator <7>
+| | | | | | | | | | | | | = <7>
+| | | | | | | | | | | | assignment_expression <7>
+| | | | | | | | | | | | | conditional_expression <7>
+| | | | | | | | | | | | | | logical_or_expression <7>
+| | | | | | | | | | | | | | | logical_and_expression <7>
+| | | | | | | | | | | | | | | | inclusive_or_expression <7>
+| | | | | | | | | | | | | | | | | exclusive_or_expression <7>
+| | | | | | | | | | | | | | | | | | and_expression <7>
+| | | | | | | | | | | | | | | | | | | equality_expression <7>
+| | | | | | | | | | | | | | | | | | | | relational_expression <7>
+| | | | | | | | | | | | | | | | | | | | | shift_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | additive_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | | multiplicative_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | | | cast_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | | | | unary_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | | | | | postfix_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | primary_expression <7>
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | CONSTANT_INT:0 
+| | | | | | | | | | ; <7>
+| | | | | | block_item <8>
+| | | | | | | statement <8>
+| | | | | | | | jump_statement <8>
+| | | | | | | | | RETURN <8>
+| | | | | | | | | expression <8>
+| | | | | | | | | | assignment_expression <8>
+| | | | | | | | | | | conditional_expression <8>
+| | | | | | | | | | | | logical_or_expression <8>
+| | | | | | | | | | | | | logical_and_expression <8>
+| | | | | | | | | | | | | | inclusive_or_expression <8>
+| | | | | | | | | | | | | | | exclusive_or_expression <8>
+| | | | | | | | | | | | | | | | and_expression <8>
+| | | | | | | | | | | | | | | | | equality_expression <8>
+| | | | | | | | | | | | | | | | | | relational_expression <8>
+| | | | | | | | | | | | | | | | | | | shift_expression <8>
+| | | | | | | | | | | | | | | | | | | | additive_expression <8>
+| | | | | | | | | | | | | | | | | | | | | multiplicative_expression <8>
+| | | | | | | | | | | | | | | | | | | | | | cast_expression <8>
+| | | | | | | | | | | | | | | | | | | | | | | unary_expression <8>
+| | | | | | | | | | | | | | | | | | | | | | | | postfix_expression <8>
+| | | | | | | | | | | | | | | | | | | | | | | | | primary_expression <8>
+| | | | | | | | | | | | | | | | | | | | | | | | | | IDENTIFIER:result
+| | | | | | | | | ; <8>
+| | | | | } <9>

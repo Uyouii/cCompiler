@@ -50,6 +50,9 @@ struct gramTree* create_tree(char* name, int num,...) {
         else if(strcmp(head->name,"CONSTANT_DOUBLE") == 0) {
             head->double_value=atof(yytext);
         }
+        else if(strcmp(head->name,"STRING_LITERAL") == 0) {
+            head->string_value = my_substring(yytext,1,strlen(yytext) - 1);
+        }
         else {
             head->content = (char*)malloc(strlen(yytext)+1);
             strcpy(head->content,yytext);
@@ -60,12 +63,14 @@ struct gramTree* create_tree(char* name, int num,...) {
 }
 
 void eval(struct gramTree *head,int leavel) {
+
     if(head!=NULL) {
         if(head->line!=-1) {
             for(int i=0;i<leavel;++i) {
-                printf("|  ");
+                printf("| ");
             }
             printf("%s",head->name);
+        
             if((strcmp(head->name,"IDENTIFIER")==0)||(strcmp(head->name,"BOOL")==0)|| (strcmp(head->name,"INT")==0) || 
             (strcmp(head->name,"CHAR")==0) || (strcmp(head->name,"DOUBLE")==0)) {
                 printf(":%s",head->content);
@@ -77,14 +82,23 @@ void eval(struct gramTree *head,int leavel) {
                 printf(":%f ",head->double_value);
             }
             else if(strcmp(head->name,"STRING_LITERAL")==0) {
-                printf(":%s",head->content);
+                printf(":%s",head->string_value);
             }
             else {
-                printf("<%d>",head->line);
+                printf(" <%d>",head->line);
             }
             printf("\n");
         }
         eval(head->left,leavel+1);
         eval(head->right,leavel);
     }
+}
+char* my_substring(char* s, int begin, int end) {
+    char* result = (char*)malloc(end - begin + 1);
+    int i;
+    for(i = begin; i < end; i++) {
+        result[i - begin] = s[i];
+    }
+    result[i - begin] = 0;
+    return result;
 }

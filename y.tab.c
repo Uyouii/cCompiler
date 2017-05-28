@@ -64,13 +64,14 @@
 extern char *yytext;
 extern int column;
 extern FILE * yyin;
+extern FILE * yyout;
 extern struct gramTree	*root;
 extern int yylineno;
 
 int yylex(void);
 void yyerror(const char*); 
 
-#line 16 "compiler.y"
+#line 17 "compiler.y"
 typedef union{
 	struct gramTree* gt;
 } YYSTYPE;
@@ -228,27 +229,27 @@ static const short yyrhs[] = {   137,
 
 #if YYDEBUG != 0
 static const short yyrline[] = { 0,
-    54,    61,    65,    68,    76,    82,    90,    96,   100,   103,
-   106,   109,   112,   116,   120,   124,   127,   132,   136,   142,
-   147,   151,   155,   158,   161,   167,   171,   174,   177,   180,
-   183,   189,   194,   201,   205,   208,   211,   217,   221,   224,
-   230,   234,   238,   245,   249,   252,   255,   259,   266,   270,
-   274,   280,   284,   290,   294,   300,   304,   310,   314,   321,
-   325,   332,   336,   342,   347,   353,   357,   361,   365,   369,
-   373,   377,   381,   385,   389,   393,   400,   405,   412,   420,
-   424,   431,   435,   440,   444,   449,   453,   460,   464,   467,
-   470,   473,   476,   479,   483,   490,   494,   497,   502,   506,
-   512,   516,   521,   527,   531,   537,   541,   546,   550,   553,
-   558,   562,   565,   568,   571,   576,   580,   585,   589,   594,
-   598,   604,   609,   613,   618,   622,   626,   630,   634,   640,
-   644,   650,   654,   659,   663,   666,   671,   675,   680,   684,
-   689,   693,   696,   701,   705,   708,   711,   714,   717,   720,
-   723,   726,   729,   732,   738,   742,   746,   752,   756,   759,
-   762,   767,   773,   777,   782,   786,   792,   796,   799,   802,
-   805,   808,   814,   818,   824,   828,   833,   837,   842,   846,
-   851,   855,   861,   865,   868,   874,   878,   881,   884,   887,
-   890,   896,   900,   903,   906,   909,   914,   918,   923,   929,
-   936,   940,   945,   949
+    55,    62,    66,    69,    77,    83,    91,    97,   101,   104,
+   107,   110,   113,   117,   121,   125,   128,   133,   137,   143,
+   148,   152,   156,   159,   162,   168,   172,   175,   178,   181,
+   184,   190,   195,   202,   206,   209,   212,   218,   222,   225,
+   231,   235,   239,   246,   250,   253,   256,   260,   267,   271,
+   275,   281,   285,   291,   295,   301,   305,   311,   315,   322,
+   326,   333,   337,   343,   348,   354,   358,   362,   366,   370,
+   374,   378,   382,   386,   390,   394,   401,   406,   413,   421,
+   425,   432,   436,   441,   445,   450,   454,   461,   465,   468,
+   471,   474,   477,   480,   484,   491,   495,   498,   503,   507,
+   513,   517,   522,   528,   532,   538,   542,   547,   551,   554,
+   559,   563,   566,   569,   572,   577,   581,   586,   590,   595,
+   599,   605,   610,   614,   619,   623,   627,   631,   635,   641,
+   645,   651,   655,   660,   664,   667,   672,   676,   681,   685,
+   690,   694,   697,   702,   706,   709,   712,   715,   718,   721,
+   724,   727,   730,   733,   739,   743,   747,   753,   757,   760,
+   763,   768,   774,   778,   783,   787,   793,   797,   800,   803,
+   806,   809,   815,   819,   825,   829,   834,   838,   843,   847,
+   852,   856,   862,   866,   869,   875,   879,   882,   885,   888,
+   891,   897,   901,   904,   907,   910,   915,   919,   924,   930,
+   937,   941,   946,   950
 };
 #endif
 
@@ -1191,25 +1192,25 @@ yyreduce:
   switch (yyn) {
 
 case 1:
-#line 55 "compiler.y"
+#line 56 "compiler.y"
 {
 		root = create_tree("Program",1,yyvsp[0].gt);
 	;
     break;}
 case 2:
-#line 62 "compiler.y"
+#line 63 "compiler.y"
 {
 		yyval.gt = create_tree("primary_expression",1,yyvsp[0].gt);
 	;
     break;}
 case 3:
-#line 65 "compiler.y"
+#line 66 "compiler.y"
 {
 		
 	;
     break;}
 case 4:
-#line 68 "compiler.y"
+#line 69 "compiler.y"
 {
 		//printf("%d",$1->int_value);
 		yyval.gt = create_tree("primary_expression",1,yyvsp[0].gt);
@@ -1220,7 +1221,7 @@ case 4:
 	;
     break;}
 case 5:
-#line 76 "compiler.y"
+#line 77 "compiler.y"
 {
 		yyval.gt = create_tree("primary_expression",1,yyvsp[0].gt);
 		yyval.gt->type = (char*)malloc(sizeof("double"));
@@ -1229,756 +1230,756 @@ case 5:
 	;
     break;}
 case 6:
-#line 82 "compiler.y"
+#line 83 "compiler.y"
 {
 		yyval.gt = create_tree("primary_expression",1,yyvsp[0].gt);
 		yyval.gt->type = (char*)malloc(sizeof("string"));
 		strcpy(yyval.gt->type,"string");
-		yyval.gt->string_value = (char*)malloc(strlen(yyvsp[0].gt->content) + 1);	//储存起来字符串常量
-		strcpy(yyval.gt->string_value,yyvsp[0].gt->content);
+		yyval.gt->string_value = (char*)malloc(strlen(yyvsp[0].gt->string_value) + 1);	//储存起来字符串常量
+		strcpy(yyval.gt->string_value,yyvsp[0].gt->string_value);
 		//printf("%s",$$->string_value);
 	;
     break;}
 case 7:
-#line 90 "compiler.y"
+#line 91 "compiler.y"
 {
 		yyval.gt = create_tree("primary_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 8:
-#line 97 "compiler.y"
+#line 98 "compiler.y"
 {
 		yyval.gt = create_tree("postfix_expression",1,yyvsp[0].gt);
 	;
     break;}
 case 9:
-#line 100 "compiler.y"
+#line 101 "compiler.y"
 {
 		yyval.gt = create_tree("postfix_expression",4,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 10:
-#line 103 "compiler.y"
+#line 104 "compiler.y"
 {
 		yyval.gt = create_tree("postfix_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 11:
-#line 106 "compiler.y"
+#line 107 "compiler.y"
 {
 		yyval.gt = create_tree("postfix_expression",4,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 12:
-#line 109 "compiler.y"
+#line 110 "compiler.y"
 {
 		yyval.gt = create_tree("postfix_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 13:
-#line 112 "compiler.y"
+#line 113 "compiler.y"
 {
 		yyval.gt = create_tree("postfix_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 		//->
 	;
     break;}
 case 14:
-#line 116 "compiler.y"
+#line 117 "compiler.y"
 {
 		//++
 		yyval.gt = create_tree("postfix_expression",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 15:
-#line 120 "compiler.y"
+#line 121 "compiler.y"
 {
 		//--
 		yyval.gt = create_tree("postfix_expression",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 16:
-#line 124 "compiler.y"
+#line 125 "compiler.y"
 {
 		yyval.gt = create_tree("postfix_expression",6,yyvsp[-5].gt,yyvsp[-4].gt,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 17:
-#line 127 "compiler.y"
+#line 128 "compiler.y"
 {
 		yyval.gt = create_tree("postfix_expression",7,yyvsp[-6].gt,yyvsp[-5].gt,yyvsp[-4].gt,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 18:
-#line 133 "compiler.y"
+#line 134 "compiler.y"
 {
 		yyval.gt = create_tree("argument_expression_list",1,yyvsp[0].gt);
 	;
     break;}
 case 19:
-#line 136 "compiler.y"
+#line 137 "compiler.y"
 {
 		yyval.gt = create_tree("argument_expression_list",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 20:
-#line 143 "compiler.y"
+#line 144 "compiler.y"
 {
 		//printf("postfix");
 		yyval.gt = create_tree("unary_expression",1,yyvsp[0].gt);
 	;
     break;}
 case 21:
-#line 147 "compiler.y"
+#line 148 "compiler.y"
 {
 		//++
 		yyval.gt = create_tree("unary_expression",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 22:
-#line 151 "compiler.y"
+#line 152 "compiler.y"
 {
 		//--
 		yyval.gt = create_tree("unary_expression",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 23:
-#line 155 "compiler.y"
+#line 156 "compiler.y"
 {
 		yyval.gt = create_tree("unary_expression",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 24:
-#line 158 "compiler.y"
+#line 159 "compiler.y"
 {
 		yyval.gt = create_tree("unary_expression",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 25:
-#line 161 "compiler.y"
+#line 162 "compiler.y"
 {
 		yyval.gt = create_tree("unary_expression",4,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 26:
-#line 168 "compiler.y"
+#line 169 "compiler.y"
 {
 		yyval.gt = create_tree("unary_operator",1,yyvsp[0].gt);
 	;
     break;}
 case 27:
-#line 171 "compiler.y"
+#line 172 "compiler.y"
 {
 		yyval.gt = create_tree("unary_operator",1,yyvsp[0].gt);
 	;
     break;}
 case 28:
-#line 174 "compiler.y"
+#line 175 "compiler.y"
 {
 		yyval.gt = create_tree("unary_operator",1,yyvsp[0].gt);
 	;
     break;}
 case 29:
-#line 177 "compiler.y"
+#line 178 "compiler.y"
 {
 		yyval.gt = create_tree("unary_operator",1,yyvsp[0].gt);
 	;
     break;}
 case 30:
-#line 180 "compiler.y"
+#line 181 "compiler.y"
 {
 		yyval.gt = create_tree("unary_operator",1,yyvsp[0].gt);
 	;
     break;}
 case 31:
-#line 183 "compiler.y"
+#line 184 "compiler.y"
 {
 		yyval.gt = create_tree("unary_operator",1,yyvsp[0].gt);
 	;
     break;}
 case 32:
-#line 190 "compiler.y"
+#line 191 "compiler.y"
 {
 		//一元表达式
 		yyval.gt = create_tree("cast_expression",1,yyvsp[0].gt);
 	;
     break;}
 case 33:
-#line 194 "compiler.y"
+#line 195 "compiler.y"
 {
 		//强制类型转换
 		yyval.gt = create_tree("cast_expression",4,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 34:
-#line 202 "compiler.y"
+#line 203 "compiler.y"
 {
 		yyval.gt = create_tree("multiplicative_expression",1,yyvsp[0].gt);
 	;
     break;}
 case 35:
-#line 205 "compiler.y"
+#line 206 "compiler.y"
 {
 		yyval.gt = create_tree("multiplicative_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 36:
-#line 208 "compiler.y"
+#line 209 "compiler.y"
 {
 		yyval.gt = create_tree("multiplicative_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 37:
-#line 211 "compiler.y"
+#line 212 "compiler.y"
 {
 		yyval.gt = create_tree("multiplicative_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 38:
-#line 218 "compiler.y"
+#line 219 "compiler.y"
 {
 		yyval.gt = create_tree("additive_expression",1,yyvsp[0].gt);
 	;
     break;}
 case 39:
-#line 221 "compiler.y"
+#line 222 "compiler.y"
 {
 		yyval.gt = create_tree("additive_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 40:
-#line 224 "compiler.y"
+#line 225 "compiler.y"
 {
 		yyval.gt = create_tree("additive_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 41:
-#line 231 "compiler.y"
+#line 232 "compiler.y"
 {
 		yyval.gt = create_tree("shift_expression",1,yyvsp[0].gt);
 	;
     break;}
 case 42:
-#line 234 "compiler.y"
+#line 235 "compiler.y"
 {
 		//<<
 		yyval.gt = create_tree("shift_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 43:
-#line 238 "compiler.y"
+#line 239 "compiler.y"
 {
 		//<<
 		yyval.gt = create_tree("shift_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 44:
-#line 246 "compiler.y"
+#line 247 "compiler.y"
 {
 		yyval.gt = create_tree("relational_expression",1,yyvsp[0].gt);
 	;
     break;}
 case 45:
-#line 249 "compiler.y"
+#line 250 "compiler.y"
 {
 		yyval.gt = create_tree("relational_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 46:
-#line 252 "compiler.y"
+#line 253 "compiler.y"
 {
 		yyval.gt = create_tree("relational_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 47:
-#line 255 "compiler.y"
+#line 256 "compiler.y"
 {
 		// <= 
 		yyval.gt = create_tree("relational_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 48:
-#line 259 "compiler.y"
+#line 260 "compiler.y"
 {
 		// >=
 		yyval.gt = create_tree("relational_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 49:
-#line 267 "compiler.y"
+#line 268 "compiler.y"
 {
 		yyval.gt = create_tree("equality_expression",1,yyvsp[0].gt);
 	;
     break;}
 case 50:
-#line 270 "compiler.y"
+#line 271 "compiler.y"
 {
 		// ==
 		yyval.gt = create_tree("equality_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 51:
-#line 274 "compiler.y"
+#line 275 "compiler.y"
 {
 		// !=
 		yyval.gt = create_tree("equality_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 52:
-#line 281 "compiler.y"
+#line 282 "compiler.y"
 {
 		yyval.gt = create_tree("and_expression",1,yyvsp[0].gt);
 	;
     break;}
 case 53:
-#line 284 "compiler.y"
+#line 285 "compiler.y"
 {
 		yyval.gt = create_tree("and_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 54:
-#line 291 "compiler.y"
+#line 292 "compiler.y"
 {
 		yyval.gt = create_tree("exclusive_or_expression",1,yyvsp[0].gt);
 	;
     break;}
 case 55:
-#line 294 "compiler.y"
+#line 295 "compiler.y"
 {
 		yyval.gt = create_tree("exclusive_or_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 56:
-#line 301 "compiler.y"
+#line 302 "compiler.y"
 {
 		yyval.gt = create_tree("inclusive_or_expression",1,yyvsp[0].gt);
 	;
     break;}
 case 57:
-#line 304 "compiler.y"
+#line 305 "compiler.y"
 {
 		yyval.gt = create_tree("inclusive_or_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 58:
-#line 311 "compiler.y"
+#line 312 "compiler.y"
 {
 		yyval.gt = create_tree("logical_and_expression",1,yyvsp[0].gt);
 	;
     break;}
 case 59:
-#line 314 "compiler.y"
+#line 315 "compiler.y"
 {
 		//&&
 		yyval.gt = create_tree("logical_and_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 60:
-#line 322 "compiler.y"
+#line 323 "compiler.y"
 {
 		yyval.gt = create_tree("logical_or_expression",1,yyvsp[0].gt);
 	;
     break;}
 case 61:
-#line 325 "compiler.y"
+#line 326 "compiler.y"
 {
 		//||
 		yyval.gt = create_tree("logical_or_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 62:
-#line 333 "compiler.y"
+#line 334 "compiler.y"
 {
 		yyval.gt = create_tree("conditional_expression",1,yyvsp[0].gt);
 	;
     break;}
 case 63:
-#line 336 "compiler.y"
+#line 337 "compiler.y"
 {
 		yyval.gt = create_tree("conditional_expression",3,yyvsp[-4].gt,yyvsp[-3].gt,yyvsp[-2].gt);
 	;
     break;}
 case 64:
-#line 343 "compiler.y"
+#line 344 "compiler.y"
 {
 		//条件表达式
 		yyval.gt = create_tree("assignment_expression",1,yyvsp[0].gt);
 	;
     break;}
 case 65:
-#line 347 "compiler.y"
+#line 348 "compiler.y"
 {
 		yyval.gt = create_tree("assignment_expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 66:
-#line 354 "compiler.y"
+#line 355 "compiler.y"
 {
 		yyval.gt = create_tree("assignment_operator",1,yyvsp[0].gt);
 	;
     break;}
 case 67:
-#line 357 "compiler.y"
+#line 358 "compiler.y"
 {
 		//*=
 		yyval.gt = create_tree("assignment_operator",1,yyvsp[0].gt);
 	;
     break;}
 case 68:
-#line 361 "compiler.y"
+#line 362 "compiler.y"
 {
 		// /=
 		yyval.gt = create_tree("assignment_operator",1,yyvsp[0].gt);
 	;
     break;}
 case 69:
-#line 365 "compiler.y"
+#line 366 "compiler.y"
 {
 		// %=
 		yyval.gt = create_tree("assignment_operator",1,yyvsp[0].gt);
 	;
     break;}
 case 70:
-#line 369 "compiler.y"
+#line 370 "compiler.y"
 {
 		// += 
 		yyval.gt = create_tree("assignment_operator",1,yyvsp[0].gt);
 	;
     break;}
 case 71:
-#line 373 "compiler.y"
+#line 374 "compiler.y"
 {
 		// -=
 		yyval.gt = create_tree("assignment_operator",1,yyvsp[0].gt);
 	;
     break;}
 case 72:
-#line 377 "compiler.y"
+#line 378 "compiler.y"
 {
 		// <<=
 		yyval.gt = create_tree("assignment_operator",1,yyvsp[0].gt);
 	;
     break;}
 case 73:
-#line 381 "compiler.y"
+#line 382 "compiler.y"
 {
 		// >>=
 		yyval.gt = create_tree("assignment_operator",1,yyvsp[0].gt);
 	;
     break;}
 case 74:
-#line 385 "compiler.y"
+#line 386 "compiler.y"
 {
 		// &=
 		yyval.gt = create_tree("assignment_operator",1,yyvsp[0].gt);
 	;
     break;}
 case 75:
-#line 389 "compiler.y"
+#line 390 "compiler.y"
 {
 		// ^=
 		yyval.gt = create_tree("assignment_operator",1,yyvsp[0].gt);
 	;
     break;}
 case 76:
-#line 393 "compiler.y"
+#line 394 "compiler.y"
 {
 		// |=
 		yyval.gt = create_tree("assignment_operator",1,yyvsp[0].gt);
 	;
     break;}
 case 77:
-#line 401 "compiler.y"
+#line 402 "compiler.y"
 {
 		//赋值表达式
 		yyval.gt = create_tree("expression",1,yyvsp[0].gt);
 	;
     break;}
 case 78:
-#line 405 "compiler.y"
+#line 406 "compiler.y"
 {
 		//逗号表达式
 		yyval.gt = create_tree("expression",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 79:
-#line 413 "compiler.y"
+#line 414 "compiler.y"
 {
 		//条件表达式
 		yyval.gt = create_tree("constant_expression",1,yyvsp[0].gt);
 	;
     break;}
 case 80:
-#line 421 "compiler.y"
+#line 422 "compiler.y"
 {
 		yyval.gt = create_tree("declaration",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 81:
-#line 424 "compiler.y"
+#line 425 "compiler.y"
 {
 		//printf("declaration_specifiers init_declarator_list");
 		yyval.gt = create_tree("declaration",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 82:
-#line 432 "compiler.y"
+#line 433 "compiler.y"
 {	
 		yyval.gt = create_tree("declaration_specifiers",1,yyvsp[0].gt);
 	;
     break;}
 case 83:
-#line 435 "compiler.y"
+#line 436 "compiler.y"
 {
 		yyval.gt = create_tree("declaration_specifiers",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 84:
-#line 441 "compiler.y"
+#line 442 "compiler.y"
 {
 		yyval.gt = create_tree("init_declarator_list",1,yyvsp[0].gt);
 	;
     break;}
 case 85:
-#line 444 "compiler.y"
+#line 445 "compiler.y"
 {
 		yyval.gt = create_tree("init_declarator_list",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 86:
-#line 450 "compiler.y"
+#line 451 "compiler.y"
 {
 		yyval.gt = create_tree("init_declarator",1,yyvsp[0].gt);
 	;
     break;}
 case 87:
-#line 453 "compiler.y"
+#line 454 "compiler.y"
 {
 		yyval.gt = create_tree("init_declarator",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 88:
-#line 461 "compiler.y"
+#line 462 "compiler.y"
 {
 		yyval.gt = create_tree("type_specifier",1,yyvsp[0].gt);
 	;
     break;}
 case 89:
-#line 464 "compiler.y"
+#line 465 "compiler.y"
 {
 		yyval.gt = create_tree("type_specifier",1,yyvsp[0].gt);
 	;
     break;}
 case 90:
-#line 467 "compiler.y"
+#line 468 "compiler.y"
 {
 		yyval.gt = create_tree("type_specifier",1,yyvsp[0].gt);
 	;
     break;}
 case 91:
-#line 470 "compiler.y"
+#line 471 "compiler.y"
 {
 		yyval.gt = create_tree("type_specifier",1,yyvsp[0].gt);	
 	;
     break;}
 case 92:
-#line 473 "compiler.y"
+#line 474 "compiler.y"
 {
 		yyval.gt = create_tree("type_specifier",1,yyvsp[0].gt);
 	;
     break;}
 case 93:
-#line 476 "compiler.y"
+#line 477 "compiler.y"
 {
 		yyval.gt = create_tree("type_specifier",1,yyvsp[0].gt);
 	;
     break;}
 case 94:
-#line 479 "compiler.y"
+#line 480 "compiler.y"
 {
 		//enum
 		yyval.gt = create_tree("type_specifier",1,yyvsp[0].gt);
 	;
     break;}
 case 95:
-#line 483 "compiler.y"
+#line 484 "compiler.y"
 {
 		//暂时没写
 		yyval.gt = create_tree("type_specifier",1,yyvsp[0].gt);
 	;
     break;}
 case 96:
-#line 491 "compiler.y"
+#line 492 "compiler.y"
 {
 		yyval.gt = create_tree("struct_or_union_specifier",4,yyvsp[-4].gt,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt);
 	;
     break;}
 case 97:
-#line 494 "compiler.y"
+#line 495 "compiler.y"
 {
 		yyval.gt = create_tree("struct_or_union_specifier",4,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 98:
-#line 497 "compiler.y"
+#line 498 "compiler.y"
 {
 		yyval.gt = create_tree("struct_or_union_specifier",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 99:
-#line 503 "compiler.y"
+#line 504 "compiler.y"
 {
 		yyval.gt = create_tree("struct_or_union",1,yyvsp[0].gt);
 	;
     break;}
 case 100:
-#line 506 "compiler.y"
+#line 507 "compiler.y"
 {
 		yyval.gt = create_tree("struct_or_union",1,yyvsp[0].gt);
 	;
     break;}
 case 101:
-#line 513 "compiler.y"
+#line 514 "compiler.y"
 {
 		yyval.gt = create_tree("struct_declaration_list",1,yyvsp[0].gt);
 	;
     break;}
 case 102:
-#line 516 "compiler.y"
+#line 517 "compiler.y"
 {
 		yyval.gt = create_tree("struct_declaration_list",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 103:
-#line 522 "compiler.y"
+#line 523 "compiler.y"
 {
 		yyval.gt = create_tree("struct_declaration",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 104:
-#line 528 "compiler.y"
+#line 529 "compiler.y"
 {
 		yyval.gt = create_tree("specifier_qualifier_list",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 105:
-#line 531 "compiler.y"
+#line 532 "compiler.y"
 {
 		//类型说明符
 		yyval.gt = create_tree("specifier_qualifier_list",1,yyvsp[0].gt);
 	;
     break;}
 case 106:
-#line 538 "compiler.y"
+#line 539 "compiler.y"
 {
 		yyval.gt = create_tree("struct_declarator_list",1,yyvsp[0].gt);
 	;
     break;}
 case 107:
-#line 541 "compiler.y"
+#line 542 "compiler.y"
 {
 		yyval.gt = create_tree("struct_declarator_list",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 108:
-#line 547 "compiler.y"
+#line 548 "compiler.y"
 {
 		yyval.gt = create_tree("struct_declarator",1,yyvsp[0].gt);
 	;
     break;}
 case 109:
-#line 550 "compiler.y"
+#line 551 "compiler.y"
 {
 		yyval.gt = create_tree("struct_declarator",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 110:
-#line 553 "compiler.y"
+#line 554 "compiler.y"
 {
 		yyval.gt = create_tree("struct_declarator",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 111:
-#line 559 "compiler.y"
+#line 560 "compiler.y"
 {
 		yyval.gt = create_tree("enum_specifier",4,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 112:
-#line 562 "compiler.y"
+#line 563 "compiler.y"
 {
 		yyval.gt = create_tree("enum_specifier",4,yyvsp[-4].gt,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt);
 	;
     break;}
 case 113:
-#line 565 "compiler.y"
+#line 566 "compiler.y"
 {
 		yyval.gt = create_tree("enum_specifier",5,yyvsp[-4].gt,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 114:
-#line 568 "compiler.y"
+#line 569 "compiler.y"
 {
 		yyval.gt = create_tree("enum_specifier",6,yyvsp[-5].gt,yyvsp[-4].gt,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 115:
-#line 571 "compiler.y"
+#line 572 "compiler.y"
 {
 		yyval.gt = create_tree("enum_specifier",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 116:
-#line 577 "compiler.y"
+#line 578 "compiler.y"
 {
 		yyval.gt = create_tree("enumerator_list",1,yyvsp[0].gt);
 	;
     break;}
 case 117:
-#line 580 "compiler.y"
+#line 581 "compiler.y"
 {
 		yyval.gt = create_tree("enumerator_list",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 118:
-#line 586 "compiler.y"
+#line 587 "compiler.y"
 {
 		yyval.gt = create_tree("enumerator",1,yyvsp[0].gt);
 	;
     break;}
 case 119:
-#line 589 "compiler.y"
+#line 590 "compiler.y"
 {
 		yyval.gt = create_tree("enumerator",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 120:
-#line 595 "compiler.y"
+#line 596 "compiler.y"
 {
 		yyval.gt = create_tree("declarator",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 121:
-#line 598 "compiler.y"
+#line 599 "compiler.y"
 {
 		yyval.gt = create_tree("declarator",1,yyvsp[0].gt);
 	;
     break;}
 case 122:
-#line 605 "compiler.y"
+#line 606 "compiler.y"
 {
 		//变量
 		yyval.gt = create_tree("direct_declarator",1,yyvsp[0].gt);
 	;
     break;}
 case 123:
-#line 609 "compiler.y"
+#line 610 "compiler.y"
 {
 		//.....
 		yyval.gt = create_tree("direct_declarator",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 124:
-#line 613 "compiler.y"
+#line 614 "compiler.y"
 {
 		//数组
 		//printf("assignment_expression");
@@ -1986,458 +1987,458 @@ case 124:
 	;
     break;}
 case 125:
-#line 618 "compiler.y"
+#line 619 "compiler.y"
 {
 		//....
 		yyval.gt = create_tree("direct_declarator",4,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 126:
-#line 622 "compiler.y"
+#line 623 "compiler.y"
 {
 		//数组
 		yyval.gt = create_tree("direct_declarator",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 127:
-#line 626 "compiler.y"
+#line 627 "compiler.y"
 {
 		//函数
 		yyval.gt = create_tree("direct_declarator",4,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 128:
-#line 630 "compiler.y"
+#line 631 "compiler.y"
 {
 		//函数
 		yyval.gt = create_tree("direct_declarator",4,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 129:
-#line 634 "compiler.y"
+#line 635 "compiler.y"
 {
 		//函数
 		yyval.gt = create_tree("direct_declarator",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 130:
-#line 641 "compiler.y"
+#line 642 "compiler.y"
 {
 		yyval.gt = create_tree("pointer",1,yyvsp[0].gt);
 	;
     break;}
 case 131:
-#line 644 "compiler.y"
+#line 645 "compiler.y"
 {
 		yyval.gt = create_tree("pointer",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 132:
-#line 651 "compiler.y"
+#line 652 "compiler.y"
 {
 		yyval.gt = create_tree("parameter_list",1,yyvsp[0].gt);
 	;
     break;}
 case 133:
-#line 654 "compiler.y"
+#line 655 "compiler.y"
 {
 		yyval.gt = create_tree("parameter_list",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 134:
-#line 660 "compiler.y"
+#line 661 "compiler.y"
 {
 		yyval.gt = create_tree("parameter_declaration",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 135:
-#line 663 "compiler.y"
+#line 664 "compiler.y"
 {
 		yyval.gt = create_tree("parameter_declaration",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 136:
-#line 666 "compiler.y"
+#line 667 "compiler.y"
 {
 		yyval.gt = create_tree("parameter_declaration",1,yyvsp[0].gt);
 	;
     break;}
 case 137:
-#line 672 "compiler.y"
+#line 673 "compiler.y"
 {
 		yyval.gt = create_tree("identifier_list",1,yyvsp[0].gt);
 	;
     break;}
 case 138:
-#line 675 "compiler.y"
+#line 676 "compiler.y"
 {
 		yyval.gt = create_tree("identifier_list",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 139:
-#line 681 "compiler.y"
+#line 682 "compiler.y"
 {
 		yyval.gt = create_tree("type_name",1,yyvsp[0].gt);
 	;
     break;}
 case 140:
-#line 684 "compiler.y"
+#line 685 "compiler.y"
 {
 		yyval.gt = create_tree("type_name",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 141:
-#line 690 "compiler.y"
+#line 691 "compiler.y"
 {
 		yyval.gt = create_tree("abstract_declarator",1,yyvsp[0].gt);
 	;
     break;}
 case 142:
-#line 693 "compiler.y"
+#line 694 "compiler.y"
 {
 		yyval.gt = create_tree("abstract_declarator",1,yyvsp[0].gt);
 	;
     break;}
 case 143:
-#line 696 "compiler.y"
+#line 697 "compiler.y"
 {
 		yyval.gt = create_tree("abstract_declarator",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 144:
-#line 702 "compiler.y"
+#line 703 "compiler.y"
 {
 		yyval.gt = create_tree("direct_abstract_declarator",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 145:
-#line 705 "compiler.y"
+#line 706 "compiler.y"
 {
 		yyval.gt = create_tree("direct_abstract_declarator",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 146:
-#line 708 "compiler.y"
+#line 709 "compiler.y"
 {
 		yyval.gt = create_tree("direct_abstract_declarator",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 147:
-#line 711 "compiler.y"
+#line 712 "compiler.y"
 {
 		yyval.gt = create_tree("direct_abstract_declarator",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 148:
-#line 714 "compiler.y"
+#line 715 "compiler.y"
 {
 		yyval.gt = create_tree("direct_abstract_declarator",4,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 149:
-#line 717 "compiler.y"
+#line 718 "compiler.y"
 {
 		yyval.gt = create_tree("direct_abstract_declarator",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 150:
-#line 720 "compiler.y"
+#line 721 "compiler.y"
 {
 		yyval.gt = create_tree("direct_abstract_declarator",4,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 151:
-#line 723 "compiler.y"
+#line 724 "compiler.y"
 {
 		yyval.gt = create_tree("direct_abstract_declarator",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 152:
-#line 726 "compiler.y"
+#line 727 "compiler.y"
 {
 		yyval.gt = create_tree("direct_abstract_declarator",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 153:
-#line 729 "compiler.y"
+#line 730 "compiler.y"
 {
 		yyval.gt = create_tree("direct_abstract_declarator",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 154:
-#line 732 "compiler.y"
+#line 733 "compiler.y"
 {
 		yyval.gt = create_tree("direct_abstract_declarator",4,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 155:
-#line 739 "compiler.y"
+#line 740 "compiler.y"
 {
 		yyval.gt = create_tree("initializer",1,yyvsp[0].gt);
 	;
     break;}
 case 156:
-#line 742 "compiler.y"
+#line 743 "compiler.y"
 {
 		//列表初始化 {1,1,1}
 		yyval.gt = create_tree("initializer",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 157:
-#line 746 "compiler.y"
+#line 747 "compiler.y"
 {
 		//列表初始化 {1,1,1,}
 		yyval.gt = create_tree("initializer",4,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 158:
-#line 753 "compiler.y"
+#line 754 "compiler.y"
 {
 		yyval.gt = create_tree("initializer_list",1,yyvsp[0].gt);
 	;
     break;}
 case 159:
-#line 756 "compiler.y"
+#line 757 "compiler.y"
 {
 		yyval.gt = create_tree("initializer_list",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 160:
-#line 759 "compiler.y"
+#line 760 "compiler.y"
 {
 		yyval.gt = create_tree("initializer_list",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 161:
-#line 762 "compiler.y"
+#line 763 "compiler.y"
 {
 		yyval.gt = create_tree("initializer_list",3,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt);
 	;
     break;}
 case 162:
-#line 768 "compiler.y"
+#line 769 "compiler.y"
 {
 		yyval.gt = create_tree("designation",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 163:
-#line 774 "compiler.y"
+#line 775 "compiler.y"
 {
 		yyval.gt = create_tree("designator_list",1,yyvsp[0].gt);
 	;
     break;}
 case 164:
-#line 777 "compiler.y"
+#line 778 "compiler.y"
 {
 		yyval.gt = create_tree("designator_list",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 165:
-#line 783 "compiler.y"
+#line 784 "compiler.y"
 {
 		yyval.gt = create_tree("designator",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 166:
-#line 786 "compiler.y"
+#line 787 "compiler.y"
 {
 		yyval.gt = create_tree("designator",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 167:
-#line 793 "compiler.y"
+#line 794 "compiler.y"
 {
 		yyval.gt = create_tree("statement",1,yyvsp[0].gt);
 	;
     break;}
 case 168:
-#line 796 "compiler.y"
+#line 797 "compiler.y"
 {
 		yyval.gt = create_tree("statement",1,yyvsp[0].gt);
 	;
     break;}
 case 169:
-#line 799 "compiler.y"
+#line 800 "compiler.y"
 {
 		yyval.gt = create_tree("statement",1,yyvsp[0].gt);
 	;
     break;}
 case 170:
-#line 802 "compiler.y"
+#line 803 "compiler.y"
 {
 		yyval.gt = create_tree("statement",1,yyvsp[0].gt);
 	;
     break;}
 case 171:
-#line 805 "compiler.y"
+#line 806 "compiler.y"
 {
 		yyval.gt = create_tree("statement",1,yyvsp[0].gt);
 	;
     break;}
 case 172:
-#line 808 "compiler.y"
+#line 809 "compiler.y"
 {
 		yyval.gt = create_tree("statement",1,yyvsp[0].gt);
 	;
     break;}
 case 173:
-#line 815 "compiler.y"
+#line 816 "compiler.y"
 {
 		yyval.gt = create_tree("labeled_statement",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 174:
-#line 818 "compiler.y"
+#line 819 "compiler.y"
 {
 		yyval.gt = create_tree("labeled_statement",4,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 175:
-#line 825 "compiler.y"
+#line 826 "compiler.y"
 {
 		yyval.gt = create_tree("compound_statement",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 176:
-#line 828 "compiler.y"
+#line 829 "compiler.y"
 {
 		yyval.gt = create_tree("compound_statement",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 177:
-#line 834 "compiler.y"
+#line 835 "compiler.y"
 {
 		yyval.gt = create_tree("block_item_list",1,yyvsp[0].gt);
 	;
     break;}
 case 178:
-#line 837 "compiler.y"
+#line 838 "compiler.y"
 {
 		yyval.gt = create_tree("block_item_list",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 179:
-#line 843 "compiler.y"
+#line 844 "compiler.y"
 {
 		yyval.gt = create_tree("block_item",1,yyvsp[0].gt);
 	;
     break;}
 case 180:
-#line 846 "compiler.y"
+#line 847 "compiler.y"
 {
 		yyval.gt = create_tree("block_item",1,yyvsp[0].gt);
 	;
     break;}
 case 181:
-#line 852 "compiler.y"
+#line 853 "compiler.y"
 {
 		yyval.gt = create_tree("expression_statement",1,yyvsp[0].gt);
 	;
     break;}
 case 182:
-#line 855 "compiler.y"
+#line 856 "compiler.y"
 {
 		yyval.gt = create_tree("expression_statement",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 183:
-#line 862 "compiler.y"
+#line 863 "compiler.y"
 {
 		yyval.gt = create_tree("selection_statement",5,yyvsp[-4].gt,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 184:
-#line 865 "compiler.y"
+#line 866 "compiler.y"
 {
 		yyval.gt = create_tree("selection_statement",7,yyvsp[-6].gt,yyvsp[-5].gt,yyvsp[-4].gt,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 185:
-#line 868 "compiler.y"
+#line 869 "compiler.y"
 {
 		yyval.gt = create_tree("selection_statement",5,yyvsp[-4].gt,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 186:
-#line 875 "compiler.y"
+#line 876 "compiler.y"
 {
 		yyval.gt = create_tree("iteration_statement",5,yyvsp[-4].gt,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 187:
-#line 878 "compiler.y"
+#line 879 "compiler.y"
 {
 		yyval.gt = create_tree("iteration_statement",7,yyvsp[-6].gt,yyvsp[-5].gt,yyvsp[-4].gt,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 188:
-#line 881 "compiler.y"
+#line 882 "compiler.y"
 {
 		yyval.gt = create_tree("iteration_statement",6,yyvsp[-5].gt,yyvsp[-4].gt,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 189:
-#line 884 "compiler.y"
+#line 885 "compiler.y"
 {
 		yyval.gt = create_tree("iteration_statement",7,yyvsp[-6].gt,yyvsp[-5].gt,yyvsp[-4].gt,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 190:
-#line 887 "compiler.y"
+#line 888 "compiler.y"
 {
 		yyval.gt = create_tree("iteration_statement",6,yyvsp[-5].gt,yyvsp[-4].gt,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 191:
-#line 890 "compiler.y"
+#line 891 "compiler.y"
 {
 		yyval.gt = create_tree("iteration_statement",7,yyvsp[-6].gt,yyvsp[-5].gt,yyvsp[-4].gt,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 192:
-#line 897 "compiler.y"
+#line 898 "compiler.y"
 {
 		yyval.gt = create_tree("jump_statement",2,yyvsp[-2].gt,yyvsp[-1].gt);
 	;
     break;}
 case 193:
-#line 900 "compiler.y"
+#line 901 "compiler.y"
 {
 		yyval.gt = create_tree("jump_statement",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 194:
-#line 903 "compiler.y"
+#line 904 "compiler.y"
 {
 		yyval.gt = create_tree("jump_statement",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 195:
-#line 906 "compiler.y"
+#line 907 "compiler.y"
 {
 		yyval.gt = create_tree("jump_statement",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 196:
-#line 909 "compiler.y"
+#line 910 "compiler.y"
 {
 		yyval.gt = create_tree("jump_statement",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 197:
-#line 915 "compiler.y"
+#line 916 "compiler.y"
 {
 		yyval.gt = create_tree("translation",1,yyvsp[0].gt);
 	;
     break;}
 case 198:
-#line 918 "compiler.y"
+#line 919 "compiler.y"
 {
 		yyval.gt = create_tree("translation",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 199:
-#line 924 "compiler.y"
+#line 925 "compiler.y"
 {
 		yyval.gt = create_tree("external_declaration",1,yyvsp[0].gt);
 		//函数定义
@@ -2445,7 +2446,7 @@ case 199:
 	;
     break;}
 case 200:
-#line 929 "compiler.y"
+#line 930 "compiler.y"
 {
 		yyval.gt = create_tree("external_declaration",1,yyvsp[0].gt);
 		//变量声明
@@ -2453,25 +2454,25 @@ case 200:
 	;
     break;}
 case 201:
-#line 937 "compiler.y"
+#line 938 "compiler.y"
 {
 		yyval.gt = create_tree("external_declaration",4,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 202:
-#line 940 "compiler.y"
+#line 941 "compiler.y"
 {
 		yyval.gt = create_tree("external_declaration",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 203:
-#line 946 "compiler.y"
+#line 947 "compiler.y"
 {
 		yyval.gt = create_tree("declaration_list",1,yyvsp[0].gt);
 	;
     break;}
 case 204:
-#line 949 "compiler.y"
+#line 950 "compiler.y"
 {
 		yyval.gt = create_tree("declaration_list",2,yyvsp[-1].gt,yyvsp[0].gt);
 	;
@@ -2698,7 +2699,7 @@ yyerrhandle:
     }
   return 1;
 }
-#line 954 "compiler.y"
+#line 955 "compiler.y"
 
 
 
@@ -2712,10 +2713,13 @@ void yyerror(char const *s)
 int main(int argc,char* argv[]) {
 
 	yyin = fopen(argv[1],"r");
-
+	
+	freopen("output/output.txt","w", stdout);
 	yyparse();
 	printf("\n");
+
 	eval(root,0);
+
 	fclose(yyin);
 	return 0;
 }

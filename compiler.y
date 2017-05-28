@@ -6,6 +6,7 @@
 extern char *yytext;
 extern int column;
 extern FILE * yyin;
+extern FILE * yyout;
 extern struct gramTree	*root;
 extern int yylineno;
 
@@ -83,8 +84,8 @@ primary_expression:
 		$$ = create_tree("primary_expression",1,$1);
 		$$->type = (char*)malloc(sizeof("string"));
 		strcpy($$->type,"string");
-		$$->string_value = (char*)malloc(strlen($1->content) + 1);	//储存起来字符串常量
-		strcpy($$->string_value,$1->content);
+		$$->string_value = (char*)malloc(strlen($1->string_value) + 1);	//储存起来字符串常量
+		strcpy($$->string_value,$1->string_value);
 		//printf("%s",$$->string_value);
 	}
 	| '(' expression ')'{
@@ -964,10 +965,13 @@ void yyerror(char const *s)
 int main(int argc,char* argv[]) {
 
 	yyin = fopen(argv[1],"r");
-
+	
+	freopen("output/output.txt","w", stdout);
 	yyparse();
 	printf("\n");
+
 	eval(root,0);
+
 	fclose(yyin);
 	return 0;
 }

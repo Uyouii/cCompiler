@@ -19,10 +19,11 @@ struct gramTree {
     struct gramTree *right;
     double double_value;
     int    int_value;
-    char* string_value;
+    char *string_value;
 };
 
 struct gramTree* create_tree(char* name, int num,...);
 void eval(struct gramTree *head,int leavel);
+char* my_substring(char* s, int begin, int end);
 
 #endif
