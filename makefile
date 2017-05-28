@@ -3,6 +3,7 @@ bison -vdty compiler.y
 gcc -std=c11 -o compiler tree.c lex.yy.c y.tab.c
 compiler.exe test/test.c
 
+
 # compiler:  tree.o	yacc.o  lex.o
 # 	gcc -std=c11 -o compiler  tree.o yacc.o lex.o
 

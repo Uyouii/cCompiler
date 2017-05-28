@@ -6,9 +6,10 @@ struct gramTree* create_tree(char* name, int num,...) {
     if(!head) {
         printf("Out of space \n");
         exit(0);
-    }
+    }   
     head->left = NULL;
     head->right = NULL;
+    head->content = NULL;
     struct gramTree* temp = NULL;
     head->name = name;
     va_start(valist,num);
@@ -17,7 +18,12 @@ struct gramTree* create_tree(char* name, int num,...) {
         head->left = temp;
         head->line = temp->line;
         if(num == 1) {
-            head->content = temp->content;
+            //head->content = temp->content;
+            if(temp->content != NULL) {
+                head->content = (char*)malloc(strlen(temp->content) + 1);
+                strcpy(head->content,temp->content);
+            }
+            else head->content = NULL;
         }
         else {
             for(int i = 1; i < num; ++i ) {
@@ -39,14 +45,15 @@ struct gramTree* create_tree(char* name, int num,...) {
             }
             else value = atoi(yytext);      //10进制整数
             head->int_value = value;
+            //printf("%d",value);
         }
         else if(strcmp(head->name,"CONSTANT_DOUBLE") == 0) {
             head->double_value=atof(yytext);
         }
         else {
-            char *string=(char*)malloc(strlen(yytext)+1);
-            strcpy(string,yytext);
-            head->content=string;
+            head->content = (char*)malloc(strlen(yytext)+1);
+            strcpy(head->content,yytext);
+            
         }
     }
     return head;
@@ -56,7 +63,7 @@ void eval(struct gramTree *head,int leavel) {
     if(head!=NULL) {
         if(head->line!=-1) {
             for(int i=0;i<leavel;++i) {
-                printf("  ");
+                printf("|  ");
             }
             printf("%s",head->name);
             if((strcmp(head->name,"IDENTIFIER")==0)||(strcmp(head->name,"BOOL")==0)|| (strcmp(head->name,"INT")==0) || 
@@ -73,7 +80,7 @@ void eval(struct gramTree *head,int leavel) {
                 printf(":%s",head->content);
             }
             else {
-                printf("(%d)",head->line);
+                printf("<%d>",head->line);
             }
             printf("\n");
         }
