@@ -49,6 +49,8 @@ IS          ((u|U)|(u|U)?(l|L|ll|LL)|(l|L|ll|LL)(u|U))
 "union"			{ count(); yylval.gt =create_tree("UNION",0,yylineno);		return(UNION); }
 "void"			{ count(); yylval.gt =create_tree("VOID",0,yylineno);		return(VOID); }
 "while"			{ count(); yylval.gt =create_tree("WHILE",0,yylineno);		return(WHILE); }
+"true"			{ count(); yylval.gt =create_tree("TRUE",0,yylineno);		return(TRUE); }
+"false"			{ count(); yylval.gt =create_tree("FALSE",0,yylineno);		return(FALSE); }
 
 {L}({L}|{D})* 	{count(); yylval.gt =create_tree("IDENTIFIER",0,yylineno);	return(check_type());/*IDENTIFIER*/ }
 

@@ -11,23 +11,25 @@
 using namespace std;
 extern char *yytext;
 extern int yylineno;//提供当前行数信息
-extern struct gramTree *root;
 
 
-struct gramTree {
-    char* content;
-    char* type;
-    char* name;
+class gramTree {
+public:
+    string content;
+    string type;
+    string name;
     int line;       //所在代码行数
-    struct gramTree *left;
-    struct gramTree *right;
+    gramTree *left;
+    gramTree *right;
     double double_value;
-    int    int_value;
-    char *string_value;
+    int int_value;
+    string string_value;
 };
 
-struct gramTree* create_tree(string name, int num,...);
-void eval(struct gramTree *head,int leavel);
+extern gramTree *root;
+
+gramTree* create_tree(string name, int num,...);
+void eval(gramTree *head,int leavel);
 char* my_substring(char* s, int begin, int end);
 
 #endif

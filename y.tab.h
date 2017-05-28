@@ -1,5 +1,5 @@
 typedef union{
-	struct gramTree* gt;
+	class gramTree* gt;
 } YYSTYPE;
 #define	IDENTIFIER	257
 #define	CONSTANT	258
@@ -50,7 +50,9 @@ typedef union{
 #define	CONTINUE	303
 #define	BREAK	304
 #define	RETURN	305
-#define	LOWER_THAN_ELSE	306
+#define	TRUE	306
+#define	FALSE	307
+#define	LOWER_THAN_ELSE	308
 
 
 extern YYSTYPE yylval;

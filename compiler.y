@@ -8,7 +8,7 @@ extern char *yytext;
 extern int column;
 extern FILE * yyin;
 extern FILE * yyout;
-struct gramTree *root;
+gramTree *root;
 extern int yylineno;
 
 int yylex(void);
@@ -16,7 +16,7 @@ void yyerror(const char*);
 %}
 
 %union{
-	struct gramTree* gt;
+	class gramTree* gt;
 }
 
 %token <gt> IDENTIFIER CONSTANT STRING_LITERAL SIZEOF CONSTANT_INT CONSTANT_DOUBLE
@@ -30,6 +30,8 @@ void yyerror(const char*);
 %token <gt> STRUCT UNION ENUM ELLIPSIS
 
 %token <gt> CASE IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
+
+%token <gt> TRUE FALSE
 
 %token <gt> ';' ',' ':' '=' '[' ']' '.' '&' '!' '~' '-' '+' '*' '/' '%' '<' '>' '^' '|' '?' '{' '}' '(' ')'
 
@@ -64,29 +66,37 @@ primary_expression:
 	IDENTIFIER {
 		$$ = create_tree(string("primary_expression").c_str(),1,$1);
 	}
+		|
+	TRUE {
+		$$ = create_tree("primary_expression",1,$1);
+		$$->type = "bool";
+		$$->int_value = $1->int_value;
+	}
+	|
+	FALSE {
+		$$ = create_tree("primary_expression",1,$1);
+		$$->type = "bool";
+		$$->int_value = $1->int_value;
+	}
 	| CONSTANT{
 		
 	}
 	| CONSTANT_INT {
 		//printf("%d",$1->int_value);
 		$$ = create_tree("primary_expression",1,$1);
-		$$->type = (char*)malloc(sizeof("int"));
-		strcpy($$->type,"int");
+		$$->type = "int";
 		$$->int_value = $1->int_value;
 		
 	}
 	| CONSTANT_DOUBLE {
 		$$ = create_tree("primary_expression",1,$1);
-		$$->type = (char*)malloc(sizeof("double"));
-		strcpy($$->type,"double");
+		$$->type = "double";
 		$$->double_value = $1->double_value;
 	}
 	| STRING_LITERAL{
 		$$ = create_tree("primary_expression",1,$1);
-		$$->type = (char*)malloc(sizeof("string"));
-		strcpy($$->type,"string");
-		$$->string_value = (char*)malloc(strlen($1->string_value) + 1);	//储存起来字符串常量
-		strcpy($$->string_value,$1->string_value);
+		$$->type = "string";
+		$$->string_value = $1->string_value;	//储存起来字符串常量
 		//printf("%s",$$->string_value);
 	}
 	| '(' expression ')'{
@@ -967,11 +977,11 @@ int main(int argc,char* argv[]) {
 
 	yyin = fopen(argv[1],"r");
 	
-	freopen("output/output.txt","w", stdout);
+	//freopen("output/output.txt","w", stdout);
 	yyparse();
 	printf("\n");
 
-	eval(root,0);
+	eval(root,0);	//输出语法分析树
 
 	fclose(yyin);
 	return 0;
