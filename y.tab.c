@@ -76,7 +76,7 @@ void yyerror(const char*);
 
 #line 18 "compiler.y"
 typedef union{
-	class gramTree* gt;
+	struct gramTree* gt;
 } YYSTYPE;
 #ifndef YYDEBUG
 #define YYDEBUG 1
@@ -2501,13 +2501,13 @@ case 202:
 case 203:
 #line 949 "compiler.y"
 {
-		yyval.gt = create_tree("external_declaration",4,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
+		yyval.gt = create_tree("function_definition",4,yyvsp[-3].gt,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 204:
 #line 952 "compiler.y"
 {
-		yyval.gt = create_tree("external_declaration",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
+		yyval.gt = create_tree("function_definition",3,yyvsp[-2].gt,yyvsp[-1].gt,yyvsp[0].gt);
 	;
     break;}
 case 205:

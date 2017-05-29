@@ -1,5 +1,5 @@
 typedef union{
-	class gramTree* gt;
+	struct gramTree* gt;
 } YYSTYPE;
 #define	IDENTIFIER	257
 #define	CONSTANT	258

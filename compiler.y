@@ -16,7 +16,7 @@ void yyerror(const char*);
 %}
 
 %union{
-	class gramTree* gt;
+	struct gramTree* gt;
 }
 
 %token <gt> IDENTIFIER CONSTANT STRING_LITERAL SIZEOF CONSTANT_INT CONSTANT_DOUBLE
@@ -947,10 +947,10 @@ external_declaration:
 
 function_definition:
 	declaration_specifiers declarator declaration_list compound_statement {
-		$$ = create_tree("external_declaration",4,$1,$2,$3,$4);
+		$$ = create_tree("function_definition",4,$1,$2,$3,$4);
 	}
 	| declaration_specifiers declarator compound_statement {
-		$$ = create_tree("external_declaration",3,$1,$2,$3);
+		$$ = create_tree("function_definition",3,$1,$2,$3);
 	}
 	;
 
