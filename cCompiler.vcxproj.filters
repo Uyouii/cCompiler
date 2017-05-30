@@ -15,16 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="lex.yy.c">
+    <ClCompile Include="tree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="tree.c">
+    <ClCompile Include="block.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="y.tab.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test.c">
+    <ClCompile Include="Praser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -32,7 +29,10 @@
     <ClInclude Include="tree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="y.tab.h">
+    <ClInclude Include="block.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Praser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,6 +3,9 @@
 #include <cstdio>
 #include <string>
 #include "tree.h"
+#include "block.h"
+#include "Praser.h"
+using namespace std;
 
 extern char *yytext;
 extern int column;
@@ -25,9 +28,7 @@ void yyerror(const char*);
 %token <gt> SUB_ASSIGN LEFT_ASSIGN RIGHT_ASSIGN AND_ASSIGN
 %token <gt> XOR_ASSIGN OR_ASSIGN TYPE_NAME
 
-%token <gt> CHAR INT DOUBLE CONST VOID
-%token <gt> BOOL 
-%token <gt> STRUCT UNION ENUM ELLIPSIS
+%token <gt> CHAR INT DOUBLE VOID BOOL 
 
 %token <gt> CASE IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
 
@@ -40,12 +41,11 @@ void yyerror(const char*);
 %type <gt> and_expression exclusive_or_expression inclusive_or_expression logical_and_expression logical_or_expression
 %type <gt> conditional_expression assignment_expression assignment_operator expression constant_expression
 
-%type <gt> declaration declaration_specifiers init_declarator_list init_declarator type_specifier
-%type <gt> struct_or_union_specifier struct_or_union struct_declaration_list struct_declaration
-%type <gt> specifier_qualifier_list struct_declarator_list struct_declarator enum_specifier enumerator_list enumerator 
-%type <gt> declarator direct_declarator 
+%type <gt> declaration init_declarator_list init_declarator type_specifier
+%type <gt> specifier_qualifier_list 
+%type <gt> declarator 
 
-%type <gt> pointer parameter_list parameter_declaration identifier_list
+%type <gt> parameter_list parameter_declaration identifier_list
 %type <gt> type_name abstract_declarator direct_abstract_declarator initializer initializer_list designation designator_list
 %type <gt> designator statement labeled_statement compound_statement block_item_list block_item expression_statement
 %type <gt> selection_statement iteration_statement jump_statement translation_unit external_declaration function_definition
@@ -57,25 +57,25 @@ void yyerror(const char*);
 
 Program: 
 	translation_unit {
-		root = create_tree(string("Program").c_str(),1,$1);
+		root = create_tree("Program",1,$1);
 	}
 	;
 
 /*基本表达式*/
 primary_expression: 
 	IDENTIFIER {
-		$$ = create_tree(string("primary_expression").c_str(),1,$1);
+		$$ = create_tree("primary_expression",1,$1);
 	}
 		|
 	TRUE {
 		$$ = create_tree("primary_expression",1,$1);
-		$$->type = "bool";
+		$$->type = "int";
 		$$->int_value = $1->int_value;
 	}
 	|
 	FALSE {
 		$$ = create_tree("primary_expression",1,$1);
-		$$->type = "bool";
+		$$->type = "int";
 		$$->int_value = $1->int_value;
 	}
 	| CONSTANT{
@@ -108,6 +108,12 @@ primary_expression:
 postfix_expression:
 	primary_expression{
 		$$ = create_tree("postfix_expression",1,$1);
+		// if($1->type.size() > 0) {
+		// 	$$->type = $1->type;
+		// 	$$->int_value = $1->int_value;
+		// 	$$->double_value = $1->double_value;
+		// 	$$->string_value = $1->string_value;
+		// } 
 	}
 	| 	postfix_expression '[' expression ']'{
 		$$ = create_tree("postfix_expression",4,$1,$2,$3,$4);
@@ -430,24 +436,14 @@ constant_expression:
 
 
 declaration:
-	declaration_specifiers ';' {
-		$$ = create_tree("declaration",2,$1,$2);
+	type_specifier ';' {
+		$$ = create_tree("declaration",2,$1,$2); //?
 	}
-	| declaration_specifiers init_declarator_list ';' {
-		//printf("declaration_specifiers init_declarator_list");
+	| type_specifier init_declarator_list ';' {
 		$$ = create_tree("declaration",3,$1,$2,$3);
 	}
 	;
 
-//变量、函数声明标识符
-declaration_specifiers:
-	type_specifier {	
-		$$ = create_tree("declaration_specifiers",1,$1);
-	}
-	| type_specifier declaration_specifiers {
-		$$ = create_tree("declaration_specifiers",2,$1,$2);
-	}	
-	;
 
 init_declarator_list:
 	init_declarator {
@@ -485,56 +481,9 @@ type_specifier:
 	| BOOL {
 		$$ = create_tree("type_specifier",1,$1);
 	}
-	| struct_or_union_specifier {
-		$$ = create_tree("type_specifier",1,$1);
-	}
-	| enum_specifier {
-		//enum
-		$$ = create_tree("type_specifier",1,$1);
-	}
-	| TYPE_NAME {
-		//暂时没写
-		$$ = create_tree("type_specifier",1,$1);
-	}
 	;
 
-/* struct 和 union*/
-struct_or_union_specifier:
-	struct_or_union IDENTIFIER '{' struct_declaration_list '}' {
-		$$ = create_tree("struct_or_union_specifier",4,$1,$2,$3,$4);
-	}
-	| struct_or_union '{' struct_declaration_list '}' {
-		$$ = create_tree("struct_or_union_specifier",4,$1,$2,$3,$4);
-	}
-	| struct_or_union IDENTIFIER {
-		$$ = create_tree("struct_or_union_specifier",2,$1,$2);
-	}
-	;
 
-struct_or_union:
-	STRUCT {
-		$$ = create_tree("struct_or_union",1,$1);
-	}
-	| UNION {
-		$$ = create_tree("struct_or_union",1,$1);
-	}
-	;
-
-/*struct 声明列表*/
-struct_declaration_list:
-	struct_declaration {
-		$$ = create_tree("struct_declaration_list",1,$1);
-	}
-	| struct_declaration_list struct_declaration {
-		$$ = create_tree("struct_declaration_list",2,$1,$2);
-	}
-	;
-
-struct_declaration:
-	specifier_qualifier_list struct_declarator_list ';' {
-		$$ = create_tree("struct_declaration",3,$1,$2,$3);
-	}
-	;
 
 specifier_qualifier_list:
 	type_specifier specifier_qualifier_list {
@@ -546,117 +495,42 @@ specifier_qualifier_list:
 	}
 	;
 
-struct_declarator_list:
-	struct_declarator {
-		$$ = create_tree("struct_declarator_list",1,$1);
-	}
-	| struct_declarator_list ',' struct_declarator {
-		$$ = create_tree("struct_declarator_list",3,$1,$2,$3);
-	}
-	;
-
-struct_declarator:
-	declarator {
-		$$ = create_tree("struct_declarator",1,$1);
-	}
-	| ':' constant_expression {
-		$$ = create_tree("struct_declarator",2,$1,$2);
-	}
-	| declarator ':' constant_expression {
-		$$ = create_tree("struct_declarator",3,$1,$2,$3);
-	}
-	;
-
-enum_specifier:
-	ENUM '{' enumerator_list '}' {
-		$$ = create_tree("enum_specifier",4,$1,$2,$3,$4);
-	}
-	| ENUM IDENTIFIER '{' enumerator_list '}' {
-		$$ = create_tree("enum_specifier",4,$1,$2,$3,$4);
-	}
-	| ENUM '{' enumerator_list ',' '}' {
-		$$ = create_tree("enum_specifier",5,$1,$2,$3,$4,$5);
-	}
-	| ENUM IDENTIFIER '{' enumerator_list ',' '}' {
-		$$ = create_tree("enum_specifier",6,$1,$2,$3,$4,$5,$6);
-	}
-	| ENUM IDENTIFIER {
-		$$ = create_tree("enum_specifier",2,$1,$2);
-	}
-	;
-
-enumerator_list:
-	enumerator {
-		$$ = create_tree("enumerator_list",1,$1);
-	}
-	| enumerator_list ',' enumerator {
-		$$ = create_tree("enumerator_list",3,$1,$2,$3);
-	}
-	;
-
-enumerator:
-	IDENTIFIER {
-		$$ = create_tree("enumerator",1,$1);
-	}
-	| IDENTIFIER '=' constant_expression {
-		$$ = create_tree("enumerator",3,$1,$2,$3);
-	}
-	;
-
 declarator:
-	pointer direct_declarator {
-		$$ = create_tree("declarator",2,$1,$2);
-	}
-	| direct_declarator {
-		$$ = create_tree("declarator",1,$1);
-	}
-	;
-
-
-direct_declarator:
 	IDENTIFIER {
 		//变量
-		$$ = create_tree("direct_declarator",1,$1);
+		$$ = create_tree("declarator",1,$1);
 	}
 	| '(' declarator ')' {
 		//.....
-		$$ = create_tree("direct_declarator",3,$1,$2,$3);
+		$$ = create_tree("declarator",3,$1,$2,$3);
 	}
-	| direct_declarator '[' assignment_expression ']' {
+	| declarator '[' assignment_expression ']' {
 		//数组
 		//printf("assignment_expression");
-		$$ = create_tree("direct_declarator",4,$1,$2,$3,$4);
+		$$ = create_tree("declarator",4,$1,$2,$3,$4);
 	}
-	| direct_declarator '[' '*' ']' {
+	| declarator '[' '*' ']' {
 		//....
-		$$ = create_tree("direct_declarator",4,$1,$2,$3,$4);
+		$$ = create_tree("declarator",4,$1,$2,$3,$4);
 	}
-	| direct_declarator '[' ']' {
+	| declarator '[' ']' {
 		//数组
-		$$ = create_tree("direct_declarator",3,$1,$2,$3);
+		$$ = create_tree("declarator",3,$1,$2,$3);
 	}
-	| direct_declarator '(' parameter_list ')' {
+	| declarator '(' parameter_list ')' {
 		//函数
-		$$ = create_tree("direct_declarator",4,$1,$2,$3,$4);
+		$$ = create_tree("declarator",4,$1,$2,$3,$4);
 	}
-	| direct_declarator '(' identifier_list ')' {
+	| declarator '(' identifier_list ')' {
 		//函数
-		$$ = create_tree("direct_declarator",4,$1,$2,$3,$4);
+		$$ = create_tree("declarator",4,$1,$2,$3,$4);
 	}
-	| direct_declarator '(' ')' {
+	| declarator '(' ')' {
 		//函数
-		$$ = create_tree("direct_declarator",3,$1,$2,$3);
+		$$ = create_tree("declarator",3,$1,$2,$3);
 	}
 	;
 
-pointer:
-	'*' {
-		$$ = create_tree("pointer",1,$1);
-	}
-	| '*' pointer {
-		$$ = create_tree("pointer",2,$1,$2);
-	}
-	;
 
 //参数列表
 parameter_list:
@@ -669,13 +543,13 @@ parameter_list:
 	;
 
 parameter_declaration:
-	declaration_specifiers declarator {
+	type_specifier declarator {
 		$$ = create_tree("parameter_declaration",2,$1,$2);
 	}
-	| declaration_specifiers abstract_declarator {
+	| type_specifier abstract_declarator {
 		$$ = create_tree("parameter_declaration",2,$1,$2);
 	}
-	| declaration_specifiers {
+	| type_specifier {
 		$$ = create_tree("parameter_declaration",1,$1);
 	}
 	;
@@ -699,14 +573,8 @@ type_name:
 	;
 
 abstract_declarator:
-	pointer {
+	direct_abstract_declarator {
 		$$ = create_tree("abstract_declarator",1,$1);
-	}
-	| direct_abstract_declarator {
-		$$ = create_tree("abstract_declarator",1,$1);
-	}
-	| pointer direct_abstract_declarator {
-		$$ = create_tree("abstract_declarator",2,$1,$2);
 	}
 	;
 
@@ -925,10 +793,10 @@ jump_statement:
 
 translation_unit:
 	external_declaration {
-		$$ = create_tree("translation",1,$1);
+		$$ = create_tree("translation_unit",1,$1);
 	}
 	| translation_unit external_declaration {
-		$$ = create_tree("translation",2,$1,$2);
+		$$ = create_tree("translation_unit",2,$1,$2);
 	}
 	;
 
@@ -946,10 +814,10 @@ external_declaration:
 	;
 
 function_definition:
-	declaration_specifiers declarator declaration_list compound_statement {
+	type_specifier declarator declaration_list compound_statement {
 		$$ = create_tree("function_definition",4,$1,$2,$3,$4);
 	}
-	| declaration_specifiers declarator compound_statement {
+	| type_specifier declarator compound_statement {
 		$$ = create_tree("function_definition",3,$1,$2,$3);
 	}
 	;
@@ -980,8 +848,9 @@ int main(int argc,char* argv[]) {
 	//freopen("output/output.txt","w", stdout);
 	yyparse();
 	printf("\n");
-
 	eval(root,0);	//输出语法分析树
+
+	//Praser praser;
 
 	fclose(yyin);
 	return 0;

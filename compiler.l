@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <cstring>
 #include "tree.h"
+#include "Praser.h"
 #include <iostream>
 using namespace std;
 
@@ -39,14 +40,11 @@ IS          ((u|U)|(u|U)?(l|L|ll|LL)|(l|L|ll|LL)(u|U))
 "continue"		{ count(); yylval.gt =create_tree("CONTINUE",0,yylineno); 	return(CONTINUE); }
 "do"			{ count(); yylval.gt =create_tree("DO",0,yylineno);			return(DO); }
 "else"			{ count(); yylval.gt =create_tree("ELSE",0,yylineno);		return(ELSE); }
-"enum"			{ count(); yylval.gt =create_tree("ENUM",0,yylineno);		return(ENUM); }
 "for"			{ count(); yylval.gt =create_tree("FOR",0,yylineno);		return(FOR); }
 "goto"			{ count(); yylval.gt =create_tree("GOTO",0,yylineno);		return(GOTO); }
 "if"			{ count(); yylval.gt =create_tree("IF",0,yylineno);			return(IF); }
 "return"		{ count(); yylval.gt =create_tree("RETURN",0,yylineno);		return(RETURN); }
-"struct"		{ count(); yylval.gt =create_tree("STRUCT",0,yylineno);		return(STRUCT); }
 "switch"		{ count(); yylval.gt =create_tree("SWITCH",0,yylineno);		return(SWITCH); }
-"union"			{ count(); yylval.gt =create_tree("UNION",0,yylineno);		return(UNION); }
 "void"			{ count(); yylval.gt =create_tree("VOID",0,yylineno);		return(VOID); }
 "while"			{ count(); yylval.gt =create_tree("WHILE",0,yylineno);		return(WHILE); }
 "true"			{ count(); yylval.gt =create_tree("TRUE",0,yylineno);		return(TRUE); }

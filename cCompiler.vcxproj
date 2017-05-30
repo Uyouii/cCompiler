@@ -97,14 +97,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="lex.yy.c" />
-    <ClCompile Include="test\test.c" />
-    <ClCompile Include="tree.c" />
-    <ClCompile Include="y.tab.c" />
+    <ClCompile Include="block.cpp" />
+    <ClCompile Include="Praser.cpp" />
+    <ClCompile Include="tree.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="block.h" />
+    <ClInclude Include="Praser.h" />
     <ClInclude Include="tree.h" />
-    <ClInclude Include="y.tab.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
