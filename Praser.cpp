@@ -257,7 +257,7 @@ string Praser::praser_and_expression(struct gramTree* and_exp) {
 }
 
 string Praser::praser_equality_expression(struct gramTree* equality_exp) {
-
+	
 	if (equality_exp->left->name == "relational_expression") {
 		gramTree* relational_exp = equality_exp->left;
 		return praser_relational_expression(relational_exp);
