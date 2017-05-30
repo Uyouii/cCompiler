@@ -14,6 +14,7 @@ using namespace std;
 struct varNode {
 	string name;
 	string type;
+	int num = -1;
 };
 
 //º¯Êý½Úµã

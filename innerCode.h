@@ -15,10 +15,13 @@ private:
 
 public:
 	int tempNum = 0;
+	int varNum = 0;
 
 	InnerCode();
 	void addCode(string);
 	void printCode();
+	string createCodeforVar(string tempname, string op, varNode node1, varNode node2);
+	string createCodeforAssign(varNode node1,varNode node2);
 };
 
 #endif // !_INNERCODE_H_
