@@ -36,17 +36,17 @@ void yyerror(const char*);
 
 %token <gt> ';' ',' ':' '=' '[' ']' '.' '&' '!' '~' '-' '+' '*' '/' '%' '<' '>' '^' '|' '?' '{' '}' '(' ')'
 
-%type <gt> primary_expression postfix_expression argument_expression_list unary_expression cast_expression unary_operator
+%type <gt> primary_expression postfix_expression argument_expression_list unary_expression unary_operator
 %type <gt> multiplicative_expression additive_expression shift_expression relational_expression equality_expression
 %type <gt> and_expression exclusive_or_expression inclusive_or_expression logical_and_expression logical_or_expression
-%type <gt> conditional_expression assignment_expression assignment_operator expression constant_expression
+%type <gt> assignment_expression assignment_operator expression
 
 %type <gt> declaration init_declarator_list init_declarator type_specifier
-%type <gt> specifier_qualifier_list 
+
 %type <gt> declarator 
 
 %type <gt> parameter_list parameter_declaration identifier_list
-%type <gt> type_name abstract_declarator direct_abstract_declarator initializer initializer_list designation designator_list
+%type <gt> abstract_declarator initializer initializer_list designation designator_list
 %type <gt> designator statement labeled_statement compound_statement block_item_list block_item expression_statement
 %type <gt> selection_statement iteration_statement jump_statement translation_unit external_declaration function_definition
 %type <gt> declaration_list
@@ -66,20 +66,17 @@ primary_expression:
 	IDENTIFIER {
 		$$ = create_tree("primary_expression",1,$1);
 	}
-		|
+	|
 	TRUE {
 		$$ = create_tree("primary_expression",1,$1);
-		$$->type = "int";
+		$$->type = "bool";
 		$$->int_value = $1->int_value;
 	}
 	|
 	FALSE {
 		$$ = create_tree("primary_expression",1,$1);
-		$$->type = "int";
+		$$->type = "bool";
 		$$->int_value = $1->int_value;
-	}
-	| CONSTANT{
-		
 	}
 	| CONSTANT_INT {
 		//printf("%d",$1->int_value);
@@ -93,12 +90,6 @@ primary_expression:
 		$$->type = "double";
 		$$->double_value = $1->double_value;
 	}
-	| STRING_LITERAL{
-		$$ = create_tree("primary_expression",1,$1);
-		$$->type = "string";
-		$$->string_value = $1->string_value;	//储存起来字符串常量
-		//printf("%s",$$->string_value);
-	}
 	| '(' expression ')'{
 		$$ = create_tree("primary_expression",3,$1,$2,$3);
 	}
@@ -108,28 +99,18 @@ primary_expression:
 postfix_expression:
 	primary_expression{
 		$$ = create_tree("postfix_expression",1,$1);
-		// if($1->type.size() > 0) {
-		// 	$$->type = $1->type;
-		// 	$$->int_value = $1->int_value;
-		// 	$$->double_value = $1->double_value;
-		// 	$$->string_value = $1->string_value;
-		// } 
 	}
 	| 	postfix_expression '[' expression ']'{
 		$$ = create_tree("postfix_expression",4,$1,$2,$3,$4);
+		//数组调用
 	}
 	| 	postfix_expression '(' ')'{
 		$$ = create_tree("postfix_expression",3,$1,$2,$3);
+		//函数调用
 	}
 	| 	postfix_expression '(' argument_expression_list ')'{
 		$$ = create_tree("postfix_expression",4,$1,$2,$3,$4);
-	}
-	| 	postfix_expression '.' IDENTIFIER{
-		$$ = create_tree("postfix_expression",3,$1,$2,$3);
-	}
-	| 	postfix_expression PTR_OP IDENTIFIER{
-		$$ = create_tree("postfix_expression",3,$1,$2,$3);
-		//->
+		//函数调用
 	}
 	| 	postfix_expression INC_OP{
 		//++
@@ -138,12 +119,6 @@ postfix_expression:
 	| 	postfix_expression DEC_OP{
 		//--
 		$$ = create_tree("postfix_expression",2,$1,$2);
-	}
-	| 	'(' type_name ')' '{' initializer_list '}'{
-		$$ = create_tree("postfix_expression",6,$1,$2,$3,$4,$5,$6);
-	}
-	| 	'(' type_name ')' '{' initializer_list ',' '}'{
-		$$ = create_tree("postfix_expression",7,$1,$2,$3,$4,$5,$6,$7);
 	}
 	;
 
@@ -170,26 +145,14 @@ unary_expression:
 		//--
 		$$ = create_tree("unary_expression",2,$1,$2);
 	}
-	| 	unary_operator cast_expression{
+	| 	unary_operator unary_expression{
 		$$ = create_tree("unary_expression",2,$1,$2);
-	}
-	| 	SIZEOF unary_expression{
-		$$ = create_tree("unary_expression",2,$1,$2);
-	}
-	| 	SIZEOF '(' type_name ')'{
-		$$ = create_tree("unary_expression",4,$1,$2,$3,$4);
 	}
 	;
 
 /*单目运算符*/
 unary_operator:
-	'&' {
-		$$ = create_tree("unary_operator",1,$1);
-	}
-	| '*' {
-		$$ = create_tree("unary_operator",1,$1);
-	}
-	| '+' {
+	'+' {
 		$$ = create_tree("unary_operator",1,$1);
 	}
 	| '-' {
@@ -203,30 +166,18 @@ unary_operator:
 	}
 	;
 
-/*转换表达式*/
-cast_expression:
-	unary_expression {
-		//一元表达式
-		$$ = create_tree("cast_expression",1,$1);
-	}
-	|'(' type_name ')' cast_expression {
-		//强制类型转换
-		$$ = create_tree("cast_expression",4,$1,$2,$3,$4);
-	}
-	;
-
 /*可乘表达式*/
 multiplicative_expression:
-	cast_expression {
+	unary_expression {
 		$$ = create_tree("multiplicative_expression",1,$1);
 	}
-	| multiplicative_expression '*' cast_expression {
+	| multiplicative_expression '*' unary_expression {
 		$$ = create_tree("multiplicative_expression",3,$1,$2,$3);
 	}
-	| multiplicative_expression '/' cast_expression {
+	| multiplicative_expression '/' unary_expression {
 		$$ = create_tree("multiplicative_expression",3,$1,$2,$3);
 	}
-	| multiplicative_expression '%' cast_expression {
+	| multiplicative_expression '%' unary_expression {
 		$$ = create_tree("multiplicative_expression",3,$1,$2,$3);
 	}
 	;
@@ -346,19 +297,9 @@ logical_or_expression:
 	}
 	;
 
-/*条件表达式*/
-conditional_expression:
-	logical_or_expression {
-		$$ = create_tree("conditional_expression",1,$1);
-	}
-	| logical_or_expression '?' expression ':' conditional_expression {
-		$$ = create_tree("conditional_expression",3,$1,$2,$3);
-	}
-	;
-
 /*赋值表达式*/
 assignment_expression:
-	conditional_expression {
+	logical_or_expression {
 		//条件表达式
 		$$ = create_tree("assignment_expression",1,$1);
 	}
@@ -426,14 +367,6 @@ expression:
 	}
 	;
 
-//常量表达式
-constant_expression:
-	conditional_expression {
-		//条件表达式
-		$$ = create_tree("constant_expression",1,$1);
-	}
-	;
-
 
 declaration:
 	type_specifier ';' {
@@ -484,16 +417,6 @@ type_specifier:
 	;
 
 
-
-specifier_qualifier_list:
-	type_specifier specifier_qualifier_list {
-		$$ = create_tree("specifier_qualifier_list",2,$1,$2);
-	}
-	| type_specifier {
-		//类型说明符
-		$$ = create_tree("specifier_qualifier_list",1,$1);
-	}
-	;
 
 declarator:
 	IDENTIFIER {
@@ -563,54 +486,39 @@ identifier_list:
 	}
 	;
 
-type_name:
-	specifier_qualifier_list {
-		$$ = create_tree("type_name",1,$1);
-	}
-	| specifier_qualifier_list abstract_declarator {
-		$$ = create_tree("type_name",2,$1,$2);
-	}
-	;
-
 abstract_declarator:
-	direct_abstract_declarator {
-		$$ = create_tree("abstract_declarator",1,$1);
-	}
-	;
-
-direct_abstract_declarator:
 	'(' abstract_declarator ')' {
-		$$ = create_tree("direct_abstract_declarator",3,$1,$2,$3);
+		$$ = create_tree("abstract_declarator",3,$1,$2,$3);
 	}
 	| '[' ']' {
-		$$ = create_tree("direct_abstract_declarator",2,$1,$2);
+		$$ = create_tree("abstract_declarator",2,$1,$2);
 	}
 	| '[' assignment_expression ']' {
-		$$ = create_tree("direct_abstract_declarator",3,$1,$2,$3);
+		$$ = create_tree("abstract_declarator",3,$1,$2,$3);
 	}
-	| direct_abstract_declarator '[' ']' {
-		$$ = create_tree("direct_abstract_declarator",3,$1,$2,$3);
+	| abstract_declarator '[' ']' {
+		$$ = create_tree("abstract_declarator",3,$1,$2,$3);
 	}
-	| direct_abstract_declarator '[' assignment_expression ']' {
-		$$ = create_tree("direct_abstract_declarator",4,$1,$2,$3,$4);
+	| abstract_declarator '[' assignment_expression ']' {
+		$$ = create_tree("abstract_declarator",4,$1,$2,$3,$4);
 	}
 	| '[' '*' ']' {
-		$$ = create_tree("direct_abstract_declarator",3,$1,$2,$3);
+		$$ = create_tree("abstract_declarator",3,$1,$2,$3);
 	}
-	| direct_abstract_declarator '[' '*' ']' {
-		$$ = create_tree("direct_abstract_declarator",4,$1,$2,$3,$4);
+	| abstract_declarator '[' '*' ']' {
+		$$ = create_tree("abstract_declarator",4,$1,$2,$3,$4);
 	}
 	| '(' ')' {
-		$$ = create_tree("direct_abstract_declarator",2,$1,$2);
+		$$ = create_tree("abstract_declarator",2,$1,$2);
 	}
 	| '(' parameter_list ')' {
-		$$ = create_tree("direct_abstract_declarator",3,$1,$2,$3);
+		$$ = create_tree("abstract_declarator",3,$1,$2,$3);
 	}
-	| direct_abstract_declarator '(' ')' {
-		$$ = create_tree("direct_abstract_declarator",3,$1,$2,$3);
+	| abstract_declarator '(' ')' {
+		$$ = create_tree("abstract_declarator",3,$1,$2,$3);
 	}
-	| direct_abstract_declarator '(' parameter_list ')' {
-		$$ = create_tree("direct_abstract_declarator",4,$1,$2,$3,$4);
+	| abstract_declarator '(' parameter_list ')' {
+		$$ = create_tree("abstract_declarator",4,$1,$2,$3,$4);
 	}
 	;
 
@@ -660,7 +568,7 @@ designator_list:
 	;
 
 designator: 
-	'[' constant_expression ']' {
+	'[' logical_or_expression ']' {
 		$$ = create_tree("designator",3,$1,$2,$3);
 	}
 	| '.' IDENTIFIER {
@@ -695,7 +603,7 @@ labeled_statement:
 	IDENTIFIER ':' statement {
 		$$ = create_tree("labeled_statement",3,$1,$2,$3);
 	}
-	| CASE constant_expression ':' statement {
+	| CASE logical_or_expression ':' statement {
 		$$ = create_tree("labeled_statement",4,$1,$2,$3,$4);
 	}
 	;
@@ -850,7 +758,7 @@ int main(int argc,char* argv[]) {
 	printf("\n");
 	eval(root,0);	//输出语法分析树
 
-	//Praser praser;
+	Praser praser;
 
 	fclose(yyin);
 	return 0;

@@ -58,9 +58,9 @@ gramTree* create_tree(string name, int num,...) {
         else if(head->name == "STRING_LITERAL") {
             head->string_value = my_substring(yytext,1,strlen(yytext) - 1);
         }
-        else {
-            head->content = yytext;
-        }
+
+        head->content = yytext;
+    
     }
     return head;
 }
@@ -70,7 +70,7 @@ void eval(gramTree *head,int leavel) {
         string Name = head->name;
         if(head->line!=-1) {
             for(int i=0;i<leavel;++i) {
-                cout << "| ";
+                cout << ". ";
             }
            cout << head->name;
         
