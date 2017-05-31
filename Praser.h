@@ -24,12 +24,22 @@ private:
 	void praserInit();
 	void praserGramTree(struct gramTree* node);
 
+	
 	struct gramTree* praser_declaration(struct gramTree* node);		//分析praser_declaration的节点
-	void praser_init_declarator(string, struct gramTree* );			//分析praser_init_declarator的节点,返回该变量
+	void praser_init_declarator_list(string, struct gramTree*);
+	void praser_init_declarator(string, struct gramTree* );			//分析praser_init_declarator的节点
+
+	struct gramTree* praser_function_definition(struct gramTree*);
+	void praser_parameter_list(struct gramTree*,string);			//获取函数形参列表
+	void praser_parameter_declaration(struct gramTree*, string);	//获取函数单个形参
+
+	struct gramTree* praser_statement(struct gramTree*);			
+	void praser_expression_statement(struct gramTree*);
+	void praser_expression(struct gramTree*);
 
 	varNode praser_assignment_expression(struct gramTree*);			//赋值表达式
 	varNode praser_logical_or_expression(struct gramTree*);			//逻辑或表达式
-	varNode praser_logical_and_expression(struct gramTree*);			//逻辑或表达式
+	varNode praser_logical_and_expression(struct gramTree*);		//逻辑或表达式
 	varNode praser_inclusive_or_expression(struct gramTree*);
 	varNode praser_exclusive_or_expression(struct gramTree*);
 	varNode praser_and_expression(struct gramTree*);

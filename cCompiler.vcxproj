@@ -98,12 +98,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="block.cpp" />
+    <ClCompile Include="innerCode.cpp" />
     <ClCompile Include="Praser.cpp" />
+    <ClCompile Include="tools.cpp" />
     <ClCompile Include="tree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="block.h" />
+    <ClInclude Include="innerCode.h" />
     <ClInclude Include="Praser.h" />
+    <ClInclude Include="tools.h" />
     <ClInclude Include="tree.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

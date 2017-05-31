@@ -1076,16 +1076,16 @@ case 3:
 #line 72 "compiler.y"
 {
 		yyval.gt = create_tree("primary_expression",1,yyvsp[0].gt);
-		yyval.gt->type = "bool";
-		yyval.gt->int_value = yyvsp[0].gt->int_value;
+		// $$->type = "bool";
+		// $$->int_value = $1->int_value;
 	;
     break;}
 case 4:
 #line 78 "compiler.y"
 {
 		yyval.gt = create_tree("primary_expression",1,yyvsp[0].gt);
-		yyval.gt->type = "bool";
-		yyval.gt->int_value = yyvsp[0].gt->int_value;
+		// $$->type = "bool";
+		// $$->int_value = $1->int_value;
 	;
     break;}
 case 5:
@@ -1093,8 +1093,8 @@ case 5:
 {
 		//printf("%d",$1->int_value);
 		yyval.gt = create_tree("primary_expression",1,yyvsp[0].gt);
-		yyval.gt->type = "int";
-		yyval.gt->int_value = yyvsp[0].gt->int_value;
+		// $$->type = "int";
+		// $$->int_value = $1->int_value;
 		
 	;
     break;}
@@ -1102,8 +1102,8 @@ case 6:
 #line 90 "compiler.y"
 {
 		yyval.gt = create_tree("primary_expression",1,yyvsp[0].gt);
-		yyval.gt->type = "double";
-		yyval.gt->double_value = yyvsp[0].gt->double_value;
+		// $$->type = "double";
+		// $$->double_value = $1->double_value;
 	;
     break;}
 case 7:

@@ -71,26 +71,26 @@ primary_expression:
 	|
 	TRUE {
 		$$ = create_tree("primary_expression",1,$1);
-		$$->type = "bool";
-		$$->int_value = $1->int_value;
+		// $$->type = "bool";
+		// $$->int_value = $1->int_value;
 	}
 	|
 	FALSE {
 		$$ = create_tree("primary_expression",1,$1);
-		$$->type = "bool";
-		$$->int_value = $1->int_value;
+		// $$->type = "bool";
+		// $$->int_value = $1->int_value;
 	}
 	| CONSTANT_INT {
 		//printf("%d",$1->int_value);
 		$$ = create_tree("primary_expression",1,$1);
-		$$->type = "int";
-		$$->int_value = $1->int_value;
+		// $$->type = "int";
+		// $$->int_value = $1->int_value;
 		
 	}
 	| CONSTANT_DOUBLE {
 		$$ = create_tree("primary_expression",1,$1);
-		$$->type = "double";
-		$$->double_value = $1->double_value;
+		// $$->type = "double";
+		// $$->double_value = $1->double_value;
 	}
 	| '(' expression ')'{
 		$$ = create_tree("primary_expression",3,$1,$2,$3);
@@ -760,7 +760,7 @@ int main(int argc,char* argv[]) {
 	printf("\n");
 	eval(root,0);	//输出语法分析树
 
-	Praser praser;
+	//Praser praser;
 
 	fclose(yyin);
 	return 0;

@@ -29,13 +29,118 @@ void Praser::praserGramTree(struct gramTree* node) {
 	if (node->name == "declaration") {
 		node = praser_declaration(node);
 	}
+	else if (node->name == "function_definition") {
+		node = praser_function_definition(node);
+	}
+	else if (node->name == "statement") {
+		node = praser_statement(node);
+	}
 
-
+	//继续向下分析
 	if (node != NULL) {
 		praserGramTree(node->left);
 		praserGramTree(node->right);
 	}
 }
+
+struct gramTree* Praser::praser_statement(struct gramTree* node) {
+	struct gramTree* next = node->left;
+	if (node->left->name == "labeled_statement") {
+
+	}
+	if (node->left->name == "compound_statement") {
+
+	}
+	if (node->left->name == "expression_statement") {
+
+	}
+	if (node->left->name == "selection_statement") {
+
+	}
+	if (node->left->name == "iteration_statement") {
+
+	}
+	if (node->left->name == "jump_statement") {
+
+	}
+	node = node->right;
+}
+
+void Praser::praser_expression_statement(struct gramTree *node) {
+	if (node->left->name == "expression") {
+		praser_expression(node->left);
+	}
+}
+
+void Praser::praser_expression(struct gramTree* node) {
+	
+}
+
+
+//函数定义
+struct gramTree* Praser::praser_function_definition(struct gramTree* node) {
+	gramTree* type_specifier = node->left;
+	gramTree* declarator = node->left->right;
+	gramTree* compound_statement = declarator->right;
+	
+	string funcType = type_specifier->left->content;
+	string funcName = declarator->left->left->content;
+	//进入新的block
+	Block funBlock;
+	funBlock.isfunc = true;
+	funBlock.func.name = funcName;
+	funBlock.func.rtype = funcType;
+	//将函数记录在块内并添加到函数池
+	blockStack.push_back(funBlock);
+	funcPool.insert({funcName,funBlock.func});
+
+	innerCode.addCode("FUNCTION " + funcName + " :");
+
+	//获取函数形参列表
+	if(declarator->left->right->right->name == "parameter_list")
+		praser_parameter_list(declarator->left->right->right, funcName);
+
+	//继续分析处理compound_statement
+	praserGramTree(compound_statement);
+
+	return node->right;
+}
+
+//获取函数形参列表
+void Praser::praser_parameter_list(struct gramTree* node,string funcName) {
+	gramTree* parameter_list = node->left;
+	while (parameter_list->name == "parameter_list") {
+		praser_parameter_declaration(parameter_list->right->right, funcName);
+		parameter_list = parameter_list->left;
+	}
+	praser_parameter_declaration(parameter_list, funcName);
+}
+
+//获取单个形参内容
+void Praser::praser_parameter_declaration(struct gramTree* node, string funcName) {
+	cout << "praser_parameter_declaration" << endl;
+	gramTree* type_specifier = node->left;
+	gramTree* declarator = node->left->right;
+	string typeName = type_specifier->left->content;
+	if (typeName == "void") {
+		error(type_specifier->line, "Void can't definite parameter.");
+	}
+	//================================================
+	//暂时只考虑变量，不考虑数组作为形参
+	string varName = declarator->left->content;
+	varNode newnode;
+	newnode.name = varName;
+	newnode.type = typeName;
+	newnode.num = innerCode.varNum++;
+	blockStack.back().func.paralist.push_back(newnode);
+	funcPool[funcName].paralist.push_back(newnode);
+	
+	//将函数的形参添加到当前块的变量池中
+	blockStack.back().varMap.insert({varName,newnode});
+
+	innerCode.addCode(innerCode.createCodeforParameter(newnode));
+}
+
 
 struct gramTree* Praser::praser_declaration(struct gramTree *node) {
 	//cout << "at " << node->name << endl;
@@ -49,16 +154,30 @@ struct gramTree* Praser::praser_declaration(struct gramTree *node) {
 	if (vartype == "void") {
 		error(begin->left->line,"void type can't assign to variable");	//报错
  	}
-	struct gramTree* decl = begin->right->left;	//init_declarator_list
+	struct gramTree* decl = begin->right;	//init_declarator_list
 
 
-	while (decl->right) {
+	/*while (decl->right) {
 		praser_init_declarator(vartype, decl->right->right);
 		decl = decl->left;
 	}
-	praser_init_declarator(vartype, decl);
+	praser_init_declarator(vartype, decl);*/
+	praser_init_declarator_list(vartype, decl);
 	return node->right;
 
+}
+
+void Praser::praser_init_declarator_list(string vartype, struct gramTree* node) {
+	if (node->left->name == "init_declarator_list") {
+		praser_init_declarator_list(vartype, node->left);
+	}
+	else if (node->left->name == "init_declarator") {
+		praser_init_declarator(vartype, node->left);
+	}
+
+	if (node->right->name == ",") {
+		praser_init_declarator(vartype, node->right->right);
+	}
 }
 
 
@@ -76,7 +195,7 @@ void Praser::praser_init_declarator(string vartype, struct gramTree* node) {
 				varNode newvar;
 				newvar.name = var;
 				newvar.type = vartype;
-				newvar.num = ++innerCode.varNum;
+				newvar.num = innerCode.varNum++;
 				blockStack.back().varMap.insert({ var,newvar });
 			}
 			else error(declarator->left->line, "Variable multiple declaration.");
@@ -92,7 +211,7 @@ void Praser::praser_init_declarator(string vartype, struct gramTree* node) {
 			if (!lookupCurruntVar(var)) {
 				newvar.name = var;
 				newvar.type = vartype;
-				newvar.num = ++innerCode.varNum;
+				newvar.num = innerCode.varNum++;
 				blockStack.back().varMap.insert({ var,newvar });
 			}
 			else error(declarator->left->line, "Variable multiple declaration.");
@@ -159,8 +278,8 @@ varNode Praser::praser_logical_and_expression(struct gramTree* logical_and_exp) 
 		return praser_inclusive_or_expression(inclusive_or_exp);
 	}
 	else if (logical_and_exp->left->name == "logical_and_expression") {
-		varNode node1 = praser_exclusive_or_expression(logical_and_exp->left);
-		varNode node2 = praser_logical_and_expression(logical_and_exp->left->right->right);
+		varNode node1 = praser_logical_and_expression(logical_and_exp->left);
+		varNode node2 = praser_inclusive_or_expression(logical_and_exp->left->right->right);
 
 		if (node1.type != "bool" || node2.type != "bool") {
 			error(logical_and_exp->left->right->line, "Logical And operation should only used to bool. ");

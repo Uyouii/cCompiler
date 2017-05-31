@@ -44,3 +44,9 @@ string InnerCode::createCodeforAssign(varNode node1, varNode node2) {
 
 	return result;
 }
+
+string InnerCode::createCodeforParameter(varNode node) {
+	string result = "PARAM ";
+	result += "_var" + inttostr(node.num);
+	return result;
+}

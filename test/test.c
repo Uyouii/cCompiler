@@ -1,2 +1,1 @@
-int a = 500, b = 0;
-int c = a * b - b % a;
+int a = 1, b = 2 , c = 3;

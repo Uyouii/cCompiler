@@ -22,6 +22,7 @@ public:
 	void printCode();
 	string createCodeforVar(string tempname, string op, varNode node1, varNode node2);
 	string createCodeforAssign(varNode node1,varNode node2);
+	string createCodeforParameter(varNode node);
 };
 
 #endif // !_INNERCODE_H_

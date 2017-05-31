@@ -34,30 +34,30 @@ gramTree* create_tree(string name, int num,...) {
     else {
         int line = va_arg(valist,int);
         head->line = line;
-        if(head->name == "CONSTANT_INT") {
-            int value;
-            if(strlen(yytext) > 1 && yytext[0] == '0' && yytext[1] != 'x') {
-                sscanf(yytext,"%o",&value); //8进制整数
-            }
-            else if(strlen(yytext) > 1 && yytext[1] == 'x'){
-                sscanf(yytext,"%x",&value); //16进制整数
-            }
-            else value = atoi(yytext);      //10进制整数
-            head->int_value = value;
-            //printf("%d",value);
+       /* if(head->name == "CONSTANT_INT") {
+           int value;
+           if(strlen(yytext) > 1 && yytext[0] == '0' && yytext[1] != 'x') {
+               sscanf(yytext,"%o",&value); //8进制整数
+           }
+           else if(strlen(yytext) > 1 && yytext[1] == 'x'){
+               sscanf(yytext,"%x",&value); //16进制整数
+           }
+           else value = atoi(yytext);      //10进制整数
+           head->int_value = value;
+           //printf("%d",value);
         }
         else if(head->name == "CONSTANT_DOUBLE") {
-            head->double_value=atof(yytext);
+           head->double_value=atof(yytext);
         }
         else if(head->name == "TRUE") {
-            head->int_value = 1;
+           head->int_value = 1;
         }
         else if(head->name == "FALSE") {
-            head->int_value = 0;
+           head->int_value = 0;
         }
         else if(head->name == "STRING_LITERAL") {
-            head->string_value = my_substring(yytext,1,strlen(yytext) - 1);
-        }
+           head->string_value = my_substring(yytext,1,strlen(yytext) - 1);
+        }*/
 
         head->content = yytext;
     
@@ -79,13 +79,13 @@ void eval(gramTree *head,int leavel) {
                 cout << ":" << head->content;
             }
             else if(head->name == "CONSTANT_INT" || head->name == "TRUE" || head->name == "FALSE") {
-                cout << ":" << head->int_value << " ";
+                cout << ":" << head->content << " ";
             }
             else if(head->name == "CONSTANT_DOUBLE") {
-                cout << ":" << head->double_value << " ";
+                cout << ":" << head->content << " ";
             }
             else if(head->name=="STRING_LITERAL") {
-                cout << ":" << head->string_value;
+                cout << ":" << head->content;
             }
             else {
                 cout << " <" << head->line << ">";

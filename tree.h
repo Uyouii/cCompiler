@@ -15,14 +15,14 @@ using namespace std;
 
 struct gramTree {
     string content;
-    string type;
+    //string type;
     string name;
     int line;       //所在代码行数
     struct gramTree *left;
     struct gramTree *right;
-    double double_value;
+   /* double double_value;
     int int_value;
-    string string_value;
+    string string_value;*/
 };
 
 extern struct gramTree *root;
