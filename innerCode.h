@@ -16,6 +16,7 @@ private:
 public:
 	int tempNum = 0;
 	int varNum = 0;
+	int labelNum = 0;
 
 	InnerCode();
 	void addCode(string);
@@ -25,6 +26,8 @@ public:
 	string createCodeforParameter(varNode node);
 	string createCodeforReturn(varNode node);
 	string createCodeforArgument(varNode node);
+	string getNodeName(varNode node);
+	string getLabelName();
 };
 
 #endif // !_INNERCODE_H_

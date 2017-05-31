@@ -33,9 +33,6 @@ void Praser::praserGramTree(struct gramTree* node) {
 	else if (node->name == "statement") {
 		node = praser_statement(node);
 	}
-	else if (node->name == "}") {
-		blockStack.pop_back();
-	}
 
 	//继续向下分析
 	if (node != NULL) {
@@ -50,13 +47,13 @@ struct gramTree* Praser::praser_statement(struct gramTree* node) {
 
 	}
 	if (node->left->name == "compound_statement") {
-
+		praser_compound_statement(node->left);
 	}
 	if (node->left->name == "expression_statement") {
 		praser_expression_statement(node->left);
 	}
 	if (node->left->name == "selection_statement") {
-
+		praser_selection_statement(node->left);
 	}
 	if (node->left->name == "iteration_statement") {
 
@@ -64,6 +61,7 @@ struct gramTree* Praser::praser_statement(struct gramTree* node) {
 	if (node->left->name == "jump_statement") {
 		praser_jump_statement(node->left);
 	}
+
 	return node->right;
 }
 
@@ -112,6 +110,82 @@ varNode Praser::praser_expression(struct gramTree* node) {
 	}
 }
 
+void Praser::praser_compound_statement(struct gramTree* node) {
+	//继续分析处理compound_statement
+	praserGramTree(node);
+}
+
+void Praser::praser_selection_statement(struct gramTree* node) {
+
+
+	if (node->left->name == "IF") {
+		if (node->left->right->right->right->right->right == NULL) {
+			//添加一个新的block
+			Block newblock;
+			blockStack.push_back(newblock);
+
+			gramTree* expression = node->left->right->right;
+			varNode exp_rnode = praser_expression(expression);
+			gramTree* statement = node->left->right->right->right->right;
+
+			string label1 = innerCode.getLabelName();
+			string label2 = innerCode.getLabelName();
+			innerCode.addCode("IF " + innerCode.getNodeName(exp_rnode) + " != " + " 0 GOTO " + label1);
+			innerCode.addCode("GOTO " + label2);
+			innerCode.addCode(label1 + " :");
+
+
+			praser_statement(statement);
+			
+			innerCode.addCode(label2 + " :");
+
+			//弹出添加的block
+			blockStack.pop_back();
+
+		}
+		else if (node->left->right->right->right->right->right->name == "ELSE") {
+			//添加一个新的block
+			Block newblock1;
+			blockStack.push_back(newblock1);
+
+			gramTree* expression = node->left->right->right;
+			varNode exp_rnode = praser_expression(expression);
+			gramTree* statement1 = node->left->right->right->right->right;
+			gramTree* statement2 = node->left->right->right->right->right->right->right;
+
+			string label1 = innerCode.getLabelName();
+			string label2 = innerCode.getLabelName();
+			string label3 = innerCode.getLabelName();
+			innerCode.addCode("IF " + innerCode.getNodeName(exp_rnode) + " != " + " 0 GOTO " + label1);
+			innerCode.addCode("GOTO " + label2);
+			innerCode.addCode(label1 + " :");
+
+			praser_statement(statement1);
+			
+			innerCode.addCode("GOTO " + label3);
+			//弹出添加的block
+			blockStack.pop_back();
+
+			//else
+			innerCode.addCode(label2 + " :");
+
+			Block newblock2;
+			blockStack.push_back(newblock2);
+
+			praser_statement(statement2);
+
+			innerCode.addCode(label3 + " :");
+
+			//弹出添加的block
+			blockStack.pop_back();
+
+		}
+	}
+	else if (node->left->name == "SWITCH") {
+
+	}
+	
+}
 
 //函数定义
 struct gramTree* Praser::praser_function_definition(struct gramTree* node) {
@@ -136,8 +210,9 @@ struct gramTree* Praser::praser_function_definition(struct gramTree* node) {
 	if(declarator->left->right->right->name == "parameter_list")
 		praser_parameter_list(declarator->left->right->right, funcName);
 
-	//继续分析处理compound_statement
-	praserGramTree(compound_statement);
+	praser_compound_statement(compound_statement);
+	//compound_statement结束后需要pop block
+	blockStack.pop_back();
 
 	return node->right;
 }
@@ -659,10 +734,12 @@ varNode Praser::praser_postfix_expression(struct gramTree* post_exp) {
 	else if (post_exp->left->right->name == "(") {
 		//函数调用
 		string funcName = post_exp->left->left->left->content;
-		gramTree* argument_exp_list = post_exp->left->right->right;
-		praser_argument_expression_list(argument_exp_list,funcName);
-		//cout << "funcCall" << endl;
+		if (post_exp->left->right->right->name == "argument_expression_list") {
+			gramTree* argument_exp_list = post_exp->left->right->right;
+			praser_argument_expression_list(argument_exp_list, funcName);
+			//cout << "funcCall" << endl;
 
+		}
 		string tempname = "_temp" + inttostr(innerCode.tempNum);
 		++innerCode.tempNum;
 
@@ -670,6 +747,7 @@ varNode Praser::praser_postfix_expression(struct gramTree* post_exp) {
 		innerCode.addCode(tempname + " := CALL " + funcName);
 
 		return newNode;
+
 		
 	}
 	else if (post_exp->left->right->name == "INC_OP") {
@@ -682,6 +760,7 @@ varNode Praser::praser_postfix_expression(struct gramTree* post_exp) {
 
 void Praser::praser_argument_expression_list(struct gramTree* node, string funcName) {
 	gramTree* argu_exp_list = node->left;
+	funcNode func = funcPool[funcName];
 	int i = 0;
 	while (argu_exp_list->name == "argument_expression_list") {
 		varNode rnode = praser_assignment_expression(argu_exp_list->right->right);
@@ -690,9 +769,19 @@ void Praser::praser_argument_expression_list(struct gramTree* node, string funcN
 
 		argu_exp_list = argu_exp_list->left;
 		i++;
+		if (func.paralist[func.paralist.size() - i].type != rnode.type) {
+			error(argu_exp_list->line, "Wrong type arguments to function " + funcName);
+		}
 	}
 	varNode rnode = praser_assignment_expression(argu_exp_list);
 	innerCode.addCode(innerCode.createCodeforArgument(rnode));
+	i++;
+	if (func.paralist[func.paralist.size() - i].type != rnode.type) {
+		error(argu_exp_list->line, "Wrong type arguments to function " + funcName);
+	}
+	if (i != func.paralist.size()) {
+		error(argu_exp_list->line, "The number of arguments doesn't equal to the function parameters number.");
+	}
 }
 
 varNode Praser::praser_primary_expression(struct gramTree* primary_exp) {

@@ -68,3 +68,14 @@ string InnerCode::createCodeforArgument(varNode node) {
 	else result += "_var" + inttostr(node.num);
 	return result;
 }
+
+string InnerCode::getNodeName(varNode node) {
+	if (node.num < 0) {
+		return node.name;
+	}
+	else return ("_var" + inttostr(node.num));
+}
+
+string InnerCode::getLabelName() {
+	return "_label" + inttostr(labelNum++);
+}

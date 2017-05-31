@@ -1,10 +1,13 @@
 
-int f(int a,int b) {
-    return a + b;
-}
+int main() 
+{ 
+    int n = 0;
+    if (n > 0) {
+        n = 1;
+    }
+    else if(n < 0)
+        n = 2;
+    else n = 3;
 
-int main(int arg) {
-    int a , b ,c;
-    arg = (f(a,b) + f(a,c)) / (b - c) ;
-    return arg;
-}
+    return n; 
+} 

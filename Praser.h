@@ -33,13 +33,17 @@ private:
 	void praser_parameter_list(struct gramTree*,string);			//获取函数形参列表
 	void praser_parameter_declaration(struct gramTree*, string);	//获取函数单个形参
 
-	struct gramTree* praser_statement(struct gramTree*);			
+	struct gramTree* praser_statement(struct gramTree*);
+
 	void praser_expression_statement(struct gramTree*);
 	varNode praser_expression(struct gramTree*);
 
 	void praser_argument_expression_list(struct gramTree*,string);
 
 	void praser_jump_statement(struct gramTree*);
+	void praser_compound_statement(struct gramTree*);
+	void praser_selection_statement(struct gramTree*);
+
 
 	varNode praser_assignment_expression(struct gramTree*);			//赋值表达式
 	varNode praser_logical_or_expression(struct gramTree*);			//逻辑或表达式
