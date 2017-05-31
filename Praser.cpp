@@ -56,7 +56,7 @@ struct gramTree* Praser::praser_statement(struct gramTree* node) {
 		praser_selection_statement(node->left);
 	}
 	if (node->left->name == "iteration_statement") {
-
+		praser_iteration_statement(node->left);
 	}
 	if (node->left->name == "jump_statement") {
 		praser_jump_statement(node->left);
@@ -115,6 +115,7 @@ void Praser::praser_compound_statement(struct gramTree* node) {
 	praserGramTree(node);
 }
 
+//if else 和 switch
 void Praser::praser_selection_statement(struct gramTree* node) {
 
 
@@ -185,6 +186,60 @@ void Praser::praser_selection_statement(struct gramTree* node) {
 
 	}
 	
+}
+
+//循环 while for do while
+void Praser::praser_iteration_statement(struct gramTree* node) {
+	if (node->left->name == "WHILE") {
+
+		//添加一个新的block
+		Block newblock;
+		blockStack.push_back(newblock);
+
+		struct gramTree* expression = node->left->right->right;
+		struct gramTree* statement = node->left->right->right->right->right;
+
+		string label1 = innerCode.getLabelName();
+		string label2 = innerCode.getLabelName();
+		string label3 = innerCode.getLabelName();
+
+		innerCode.addCode(label1 + " :");
+
+		varNode var = praser_expression(expression);
+
+		innerCode.addCode("IF " + innerCode.getNodeName(var) + " != " + "0 GOTO " + label2);
+		innerCode.addCode("GOTO " + label3);
+		innerCode.addCode(label2 + " :");
+
+		praser_statement(statement);
+
+		innerCode.addCode("GOTO " + label1);
+		innerCode.addCode(label3 + " :");
+
+		//弹出添加的block
+		blockStack.pop_back();
+	}
+	else if (node->left->name == "DO") {
+
+	}
+	else if (node->left->name == "FOR") {
+		if (node->left->right->right->name == "expression_statement") {
+			if (node->left->right->right->right->right->name == ")") {
+
+			}
+			else if(node->left->right->right->right->right->name == "expression") {
+
+			}
+		}
+		else if (node->left->right->right->name == "declaration") {
+			if (node->left->right->right->right->right->name == ")") {
+
+			}
+			else if (node->left->right->right->right->right->name == "expression") {
+
+			}
+		}
+	}
 }
 
 //函数定义
@@ -830,9 +885,7 @@ varNode Praser::praser_primary_expression(struct gramTree* primary_exp) {
 }
 
 
-
-
-//查找该变量在作用域内能不能访问的到，还没有找函数的形参
+//全局查找
 string Praser::lookupVar(string name) {
 	int N = blockStack.size();
 	for (int i = N - 1; i >= 0; i--) {
@@ -841,7 +894,7 @@ string Praser::lookupVar(string name) {
 	}
 	return "";
 }
-
+//当前块查找
 bool Praser::lookupCurruntVar(string name) {
 	return blockStack.back().varMap.find(name) != blockStack.back().varMap.end();
 }
