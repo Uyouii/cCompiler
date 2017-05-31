@@ -19,7 +19,7 @@ public:
 private:
 	map<string, funcNode> funcPool;			//函数池
 	vector<Block> blockStack;				//维护的栈
-	InnerCode innerCode;
+	InnerCode innerCode;					//中间代码生成工具
 
 	void praserInit();
 	void praserGramTree(struct gramTree* node);
@@ -55,7 +55,7 @@ private:
 
 	string lookupVar(string name);			//返回变量类型，找不到返回""
 	bool lookupCurruntVar(string name);		//查找当前块的var
-	struct varNode lookupNode(string name);	//返回块
+	struct varNode lookupNode(string name);	//返回变量节点
 
 	struct varNode createTempVar(string name, string type);
 

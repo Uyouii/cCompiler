@@ -1,1 +1,4 @@
-int a = 1, b = 2 , c = 3;
+int main(int arg) {
+    int a,b,c;
+    a += b + c;
+}

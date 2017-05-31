@@ -52,7 +52,7 @@ struct gramTree* Praser::praser_statement(struct gramTree* node) {
 
 	}
 	if (node->left->name == "expression_statement") {
-
+		praser_expression_statement(node->left);
 	}
 	if (node->left->name == "selection_statement") {
 
@@ -73,7 +73,16 @@ void Praser::praser_expression_statement(struct gramTree *node) {
 }
 
 void Praser::praser_expression(struct gramTree* node) {
-	
+	if (node->left->name == "expression") {
+		praser_expression(node->left);
+	}
+	else if (node->left->name == "assignment_expression") {
+		praser_assignment_expression(node->left);
+	}
+
+	if (node->right->name == ",") {
+		praser_assignment_expression(node->right->right);
+	}
 }
 
 
@@ -108,17 +117,21 @@ struct gramTree* Praser::praser_function_definition(struct gramTree* node) {
 
 //获取函数形参列表
 void Praser::praser_parameter_list(struct gramTree* node,string funcName) {
-	gramTree* parameter_list = node->left;
-	while (parameter_list->name == "parameter_list") {
-		praser_parameter_declaration(parameter_list->right->right, funcName);
-		parameter_list = parameter_list->left;
+	if (node->left->name == "parameter_list") {
+		praser_parameter_list(node->left, funcName);
 	}
-	praser_parameter_declaration(parameter_list, funcName);
+	else if (node->left->name == "parameter_declaration") {
+		praser_parameter_declaration(node->left,funcName);
+	}
+
+	if (node->right->name == ",") {
+		praser_parameter_declaration(node->right->right, funcName);
+	}
 }
 
 //获取单个形参内容
 void Praser::praser_parameter_declaration(struct gramTree* node, string funcName) {
-	cout << "praser_parameter_declaration" << endl;
+	//cout << "praser_parameter_declaration" << endl;
 	gramTree* type_specifier = node->left;
 	gramTree* declarator = node->left->right;
 	string typeName = type_specifier->left->content;
@@ -237,11 +250,98 @@ void Praser::praser_init_declarator(string vartype, struct gramTree* node) {
 	else error(declarator->right->line, "Wrong value to variable");
 }
 
-varNode Praser::praser_assignment_expression(struct gramTree* assign_exp) {	//返回表达式的类型
+varNode Praser::praser_assignment_expression(struct gramTree* assign_exp) {	//返回变量节点
 
-	struct gramTree* logical_or_exp = assign_exp->left;
-	
-	return praser_logical_or_expression(logical_or_exp);
+	//cout << "praser_assignment_expression" << endl;
+
+	if (assign_exp->left->name == "logical_or_expression") {
+		struct gramTree* logical_or_exp = assign_exp->left;
+
+		return praser_logical_or_expression(logical_or_exp);
+	}
+	//赋值运算
+	else if(assign_exp->left->name == "unary_expression"){
+		struct gramTree* unary_exp = assign_exp->left;
+		string op = assign_exp->left->right->left->name;
+		struct gramTree* next_assign_exp = assign_exp->left->right->right;
+		varNode node1 = praser_unary_expression(unary_exp);
+		varNode node2 = praser_assignment_expression(next_assign_exp);
+		varNode node3;
+		if (op == "=") {
+			node3 = node2;
+		}
+		else {
+			string tempname = "_temp" + inttostr(innerCode.tempNum);
+			++innerCode.tempNum;
+			node3 = createTempVar(tempname, node1.type);
+
+			blockStack.back().varMap.insert({ tempname,node3 });
+
+			if (op == "MUL_ASSIGN") { //*=
+				if (node1.type != node2.type) {
+					error(assign_exp->left->line, "Different type for two variables.");
+				}
+				innerCode.addCode(innerCode.createCodeforVar(tempname, "*", node1, node2));
+			}
+			else if (op == "DIV_ASSIGN") { //*=
+				if (node1.type != node2.type) {
+					error(assign_exp->left->line, "Different type for two variables.");
+				}
+				innerCode.addCode(innerCode.createCodeforVar(tempname, "/", node1, node2));
+			}
+			else if (op == "MOD_ASSIGN") { //*=
+				if (node1.type != "int" || node2.type != "int") {
+					error(assign_exp->left->line, "The two variables must be int.");
+				}
+				innerCode.addCode(innerCode.createCodeforVar(tempname, "%", node1, node2));
+			}
+			else if (op == "ADD_ASSIGN") { //*=
+				if (node1.type != node2.type) {
+					error(assign_exp->left->line, "Different type for two variables.");
+				}
+				innerCode.addCode(innerCode.createCodeforVar(tempname, "+", node1, node2));
+			}
+			else if (op == "SUB_ASSIGN") { //*=
+				if (node1.type != node2.type) {
+					error(assign_exp->left->line, "Different type for two variables.");
+				}
+				innerCode.addCode(innerCode.createCodeforVar(tempname, "-", node1, node2));
+			}
+			else if (op == "LEFT_ASSIGN") { //*=
+				if (node1.type != "int" || node2.type != "int") {
+					error(assign_exp->left->line, "The two variables must be int.");
+				}
+				innerCode.addCode(innerCode.createCodeforVar(tempname, "<<", node1, node2));
+			}
+			else if (op == "RIGHT_ASSIGN") { //*=
+				if (node1.type != "int" || node2.type != "int") {
+					error(assign_exp->left->line, "The two variables must be int.");
+				}
+				innerCode.addCode(innerCode.createCodeforVar(tempname, ">>", node1, node2));
+			}
+			else if (op == "AND_ASSIGN") { //*=
+				if (node1.type != "int" || node2.type != "int") {
+					error(assign_exp->left->line, "The two variables must be int.");
+				}
+				innerCode.addCode(innerCode.createCodeforVar(tempname, "&", node1, node2));
+			}
+			else if (op == "XOR_ASSIGN") { //*=
+				if (node1.type != "int" || node2.type != "int") {
+					error(assign_exp->left->line, "The two variables must be int.");
+				}
+				innerCode.addCode(innerCode.createCodeforVar(tempname, "^", node1, node2));
+			}
+			else if (op == "OR_ASSIGN") { //*=
+				if (node1.type != "int" || node2.type != "int") {
+					error(assign_exp->left->line, "The two variables must be int.");
+				}
+				innerCode.addCode(innerCode.createCodeforVar(tempname, "|", node1, node2));
+			}
+		}
+
+		innerCode.addCode(innerCode.createCodeforAssign(node1, node3));
+		return node1;
+	}
 }
 
 varNode Praser::praser_logical_or_expression(struct gramTree* logical_or_exp) {
