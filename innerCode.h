@@ -24,6 +24,7 @@ public:
 	string createCodeforAssign(varNode node1,varNode node2);
 	string createCodeforParameter(varNode node);
 	string createCodeforReturn(varNode node);
+	string createCodeforArgument(varNode node);
 };
 
 #endif // !_INNERCODE_H_

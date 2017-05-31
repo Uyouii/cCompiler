@@ -1,9 +1,10 @@
-int main(int arg) {
-    int a,b,c;
-    c = a /= (arg + b) * a;
-    return a;
+
+int f(int a,int b) {
+    return a + b;
 }
 
-int f(int a) {
-    return a;
+int main(int arg) {
+    int a , b ,c;
+    arg = (f(a,b) + f(a,c)) / (b - c) ;
+    return arg;
 }

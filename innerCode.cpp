@@ -59,3 +59,12 @@ string InnerCode::createCodeforReturn(varNode node) {
 	else result += "_var" + inttostr(node.num);
 	return result;
 }
+
+string InnerCode::createCodeforArgument(varNode node) {
+	string result = "ARG ";
+	if (node.num < 0) {
+		result += node.name;
+	}
+	else result += "_var" + inttostr(node.num);
+	return result;
+}

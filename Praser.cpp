@@ -81,9 +81,15 @@ void Praser::praser_jump_statement(struct gramTree* node) {
 		if (node->left->right->name == "expression") {//return expression
 			varNode rnode = praser_expression(node->left->right);
 			innerCode.addCode(innerCode.createCodeforReturn(rnode));
+			if (rnode.type != blockStack.back().func.rtype) {
+				error(node->left->right->line, "return type doesn't equal to function return type.");
+			}
 		}
 		else if (node->left->right->name == ";"){//return ;
 			innerCode.addCode("RETURN");
+			if (blockStack.back().func.rtype != "void") {
+				error(node->left->right->line, "You should return " + blockStack.back().func.rtype);
+			}
 		}
 	}
 }
@@ -652,6 +658,19 @@ varNode Praser::praser_postfix_expression(struct gramTree* post_exp) {
 	}
 	else if (post_exp->left->right->name == "(") {
 		//º¯Êýµ÷ÓÃ
+		string funcName = post_exp->left->left->left->content;
+		gramTree* argument_exp_list = post_exp->left->right->right;
+		praser_argument_expression_list(argument_exp_list,funcName);
+		//cout << "funcCall" << endl;
+
+		string tempname = "_temp" + inttostr(innerCode.tempNum);
+		++innerCode.tempNum;
+
+		varNode newNode = createTempVar(tempname, funcPool[funcName].rtype);
+		innerCode.addCode(tempname + " := CALL " + funcName);
+
+		return newNode;
+		
 	}
 	else if (post_exp->left->right->name == "INC_OP") {
 
@@ -661,6 +680,20 @@ varNode Praser::praser_postfix_expression(struct gramTree* post_exp) {
 	}
 }
 
+void Praser::praser_argument_expression_list(struct gramTree* node, string funcName) {
+	gramTree* argu_exp_list = node->left;
+	int i = 0;
+	while (argu_exp_list->name == "argument_expression_list") {
+		varNode rnode = praser_assignment_expression(argu_exp_list->right->right);
+
+		innerCode.addCode(innerCode.createCodeforArgument(rnode));
+
+		argu_exp_list = argu_exp_list->left;
+		i++;
+	}
+	varNode rnode = praser_assignment_expression(argu_exp_list);
+	innerCode.addCode(innerCode.createCodeforArgument(rnode));
+}
 
 varNode Praser::praser_primary_expression(struct gramTree* primary_exp) {
 	if (primary_exp->left->name == "IDENTIFIER") {
