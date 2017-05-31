@@ -4,8 +4,6 @@
 #include<map>
 using namespace std;
 
-
-
 Praser::Praser() {
 	praserInit();
 }
@@ -72,16 +70,15 @@ void Praser::praser_expression_statement(struct gramTree *node) {
 	}
 }
 
-void Praser::praser_expression(struct gramTree* node) {
+varNode Praser::praser_expression(struct gramTree* node) {
 	if (node->left->name == "expression") {
-		praser_expression(node->left);
+		return praser_expression(node->left);
 	}
 	else if (node->left->name == "assignment_expression") {
-		praser_assignment_expression(node->left);
+		return praser_assignment_expression(node->left);
 	}
-
 	if (node->right->name == ",") {
-		praser_assignment_expression(node->right->right);
+		return praser_assignment_expression(node->right->right);
 	}
 }
 
@@ -681,7 +678,8 @@ varNode Praser::praser_primary_expression(struct gramTree* primary_exp) {
 		return newNode;
 	}
 	else if (primary_exp->left->name == "(") {
-
+		struct gramTree* expression = primary_exp->left->right;
+		return praser_expression(expression);
 	}
 }
 
