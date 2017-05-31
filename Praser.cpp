@@ -33,6 +33,9 @@ void Praser::praserGramTree(struct gramTree* node) {
 	else if (node->name == "statement") {
 		node = praser_statement(node);
 	}
+	else if (node->name == "}") {
+		blockStack.pop_back();
+	}
 
 	//继续向下分析
 	if (node != NULL) {
@@ -59,9 +62,30 @@ struct gramTree* Praser::praser_statement(struct gramTree* node) {
 
 	}
 	if (node->left->name == "jump_statement") {
+		praser_jump_statement(node->left);
+	}
+	return node->right;
+}
+
+void Praser::praser_jump_statement(struct gramTree* node) {
+	if (node->left->name == "GOTO") {
 
 	}
-	node = node->right;
+	else if (node->left->name == "CONTINUE") {
+
+	}
+	else if (node->left->name == "BREAK") {
+
+	}
+	else if (node->left->name == "RETURN") {
+		if (node->left->right->name == "expression") {//return expression
+			varNode rnode = praser_expression(node->left->right);
+			innerCode.addCode(innerCode.createCodeforReturn(rnode));
+		}
+		else if (node->left->right->name == ";"){//return ;
+			innerCode.addCode("RETURN");
+		}
+	}
 }
 
 void Praser::praser_expression_statement(struct gramTree *node) {

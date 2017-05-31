@@ -37,6 +37,8 @@ private:
 	void praser_expression_statement(struct gramTree*);
 	varNode praser_expression(struct gramTree*);
 
+	void praser_jump_statement(struct gramTree*);
+
 	varNode praser_assignment_expression(struct gramTree*);			//赋值表达式
 	varNode praser_logical_or_expression(struct gramTree*);			//逻辑或表达式
 	varNode praser_logical_and_expression(struct gramTree*);		//逻辑或表达式

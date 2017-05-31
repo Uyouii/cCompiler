@@ -50,3 +50,12 @@ string InnerCode::createCodeforParameter(varNode node) {
 	result += "_var" + inttostr(node.num);
 	return result;
 }
+
+string InnerCode::createCodeforReturn(varNode node) {
+	string result = "RETURN ";
+	if (node.num < 0) {
+		result += node.name;
+	}
+	else result += "_var" + inttostr(node.num);
+	return result;
+}

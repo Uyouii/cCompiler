@@ -1,4 +1,9 @@
 int main(int arg) {
     int a,b,c;
-    a = (b + c) * (a - b);
+    c = a /= (arg + b) * a;
+    return a;
+}
+
+int f(int a) {
+    return a;
 }
