@@ -30,5 +30,6 @@ extern struct gramTree *root;
 struct gramTree* create_tree(string name, int num,...);
 void eval(struct gramTree *head,int leavel);
 char* my_substring(char* s, int begin, int end);
+void freeGramTree(gramTree* node);
 
 #endif

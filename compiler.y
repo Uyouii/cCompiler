@@ -760,7 +760,8 @@ int main(int argc,char* argv[]) {
 	printf("\n");
 	eval(root,0);	//输出语法分析树
 
-	Praser praser;
+	//Praser praser;
+	freeGramTree(root);
 
 	fclose(yyin);
 	return 0;

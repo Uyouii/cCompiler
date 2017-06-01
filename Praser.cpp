@@ -572,7 +572,7 @@ void Praser::praser_init_declarator_list(string vartype, struct gramTree* node) 
 }
 
 
-//分析变量初始化,不确定有无定义
+//分析变量初始化
 void Praser::praser_init_declarator(string vartype, struct gramTree* node) {
 	//cout << "at " << node->name << endl;
 	struct gramTree* declarator = node->left;
@@ -654,7 +654,8 @@ void Praser::praser_init_declarator(string vartype, struct gramTree* node) {
 			}
 		}
 	}
-	else if (declarator->right->name == "=") {	//有初始化
+	//有初始化
+	else if (declarator->right->name == "=") {	
 		//获取变量的名字
 		varNode newvar;
 		if (declarator->left->name == "IDENTIFIER") {

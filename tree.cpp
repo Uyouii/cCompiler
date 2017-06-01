@@ -96,6 +96,15 @@ void eval(gramTree *head,int leavel) {
         eval(head->right,leavel);
     }
 }
+
+void freeGramTree(gramTree* node) {
+	if (node == NULL)
+		return;
+	freeGramTree(node->left);
+	delete node;
+	freeGramTree(node->right);
+}
+
 char* my_substring(char* s, int begin, int end) {
     char* result = (char*)malloc(end - begin + 1);
     int i;
