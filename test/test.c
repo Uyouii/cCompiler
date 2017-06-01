@@ -1,8 +1,14 @@
 
 int main() {
-    int a[10];
-    a[0] = 1;
-    
+    double a[10];
+    for(int i = 0 ; i < 10 ; i += 1) {
+        a[i] = i;
+    }
+    int i = 0;
+    double result;
+    while(i < 10) {
+        result += a[i];
+    }
 }
 
 // int f(int a,int b);

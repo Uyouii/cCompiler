@@ -1068,6 +1068,41 @@ varNode Praser::praser_postfix_expression(struct gramTree* post_exp) {
 	}
 	else if (post_exp->left->right->name == "[") {
 		//数组调用
+		string arrayName = post_exp->left->left->left->content;
+		gramTree* expression = post_exp->left->right->right;
+		varNode enode = praser_expression(expression);
+		arrayNode anode = getArrayNode(arrayName);
+
+		if (anode.num < 0)
+			error(post_exp->left->right->line, "Undifined array " + arrayName);
+
+		varNode tempVar;
+		string tempName = "temp" + inttostr(innerCode.tempNum);
+		++innerCode.tempNum;
+		tempVar.name = tempName;
+		tempVar.type = anode.type;
+		tempVar.useAddress = true;
+		blockStack.back().varMap.insert({tempName,tempVar});
+
+
+		if (anode.type == "int" || anode.type == "double") {
+			varNode tempVar2;
+			string tempName2 = "temp" + inttostr(innerCode.tempNum);
+			++innerCode.tempNum;
+			tempVar2.name = tempName2;
+			tempVar2.type = "int";
+			blockStack.back().varMap.insert({ tempName2,tempVar2 });
+			if (anode.type == "int") {
+				innerCode.addCode(tempName2 + " := " + innerCode.getNodeName(enode) + " * #4");
+			}
+			else innerCode.addCode(tempName2 + " := " + innerCode.getNodeName(enode) + " * #8");
+
+			innerCode.addCode(tempName + " := &" + innerCode.getarrayNodeName(anode) + " + " + innerCode.getNodeName(tempVar2));
+			return tempVar;
+		}
+
+		innerCode.addCode(tempName + " := &" + innerCode.getarrayNodeName(anode) + " + " + innerCode.getNodeName(enode));
+		return tempVar;
 	}
 	else if (post_exp->left->right->name == "(") {
 		//函数调用
@@ -1228,6 +1263,26 @@ string Praser::getFuncRType() {
 			return blockStack[i].func.rtype;
 	}
 	return "";
+}
+
+string Praser::getArrayType(string name) {
+	int N = blockStack.size();
+	for (int i = N - 1; i >= 0; i--) {
+		if (blockStack[i].arrayMap.find(name) != blockStack[i].arrayMap.end())
+			return blockStack[i].arrayMap[name].type;
+	}
+	return "";
+}
+
+struct arrayNode Praser::getArrayNode(string name) {
+	int N = blockStack.size();
+	for (int i = N - 1; i >= 0; i--) {
+		if (blockStack[i].arrayMap.find(name) != blockStack[i].arrayMap.end())
+			return blockStack[i].arrayMap[name];
+	}
+	arrayNode temp;
+	temp.num = -1;
+	return temp;
 }
 
 void Praser::error(int line, string error) {

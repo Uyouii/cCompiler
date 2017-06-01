@@ -18,29 +18,53 @@ void InnerCode::printCode() {
 
 string InnerCode::createCodeforVar(string tempname, string op, varNode node1, varNode node2) {
 	string result = tempname + " := ";
-	if (node1.num < 0) {
-		result += node1.name;
+	if (node1.useAddress) {
+		result += "*" + node1.name;
 	}
-	else result += "var" + inttostr(node1.num);
+	else {
+		if (node1.num < 0) {
+			result += node1.name;
+		}
+		else result += "var" + inttostr(node1.num);
+	}
+	
 
 	result += " " + op + " ";
 
-	if (node2.num < 0) {
-		result += node2.name;
+	if (node2.useAddress) {
+		result += "*" + node2.name;
 	}
-	else result += "var" + inttostr(node2.num);
+	else {
+		if (node2.num < 0) {
+			result += node2.name;
+		}
+		else result += "var" + inttostr(node2.num);
+	}
 
 	return result;
 
 }
 
 string InnerCode::createCodeforAssign(varNode node1, varNode node2) {
-	string result = "var" + inttostr(node1.num);
-	result += " := ";
-	if (node2.num < 0) {
-		result += node2.name;
+	string result;
+	if (node1.useAddress) {
+		result = "*" + node1.name + " := ";
 	}
-	else result += "var" + inttostr(node2.num);
+	else {
+		result = "var" + inttostr(node1.num);
+		result += " := ";
+	}
+
+	if (node2.useAddress) {
+		result += "*" + node2.name;
+	}
+	else {
+		if (node2.num < 0) {
+			result += node2.name;
+		}
+		else result += "var" + inttostr(node2.num);
+	}
+	
 
 	return result;
 }

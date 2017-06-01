@@ -27,6 +27,7 @@ public:
 	string createCodeforParameter(varNode node);
 	string createCodeforReturn(varNode node);
 	string createCodeforArgument(varNode node);
+
 	string getNodeName(varNode node);
 	string getarrayNodeName(arrayNode node);
 	string getLabelName();

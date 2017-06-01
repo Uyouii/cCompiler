@@ -67,6 +67,8 @@ private:
 	bool lookupCurruntVar(string name);		//查找当前块的var
 	struct varNode lookupNode(string name);	//返回变量节点
 	string getFuncRType();
+	string getArrayType(string);
+	struct arrayNode getArrayNode(string);
 
 	struct varNode createTempVar(string name, string type);
 
