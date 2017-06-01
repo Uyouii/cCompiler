@@ -1,9 +1,11 @@
 
+int f(int i,int j) {
+    return i;
+}
+
 int main() {
-    int a = 0;
-    int i = 1;
-    for(int i = 0; i < 100;) {
-        a *= 2;
-    }
+    int a = read();
+    int i = f(a,a);
+    write(1);
     return a;
 }

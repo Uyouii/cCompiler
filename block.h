@@ -19,6 +19,7 @@ struct varNode {
 
 //函数节点
 struct funcNode {
+	bool isdefinited = false;
 	string name;				//函数名
 	string rtype;				//函数返回类型
 	vector<varNode> paralist;	//记录形参列表

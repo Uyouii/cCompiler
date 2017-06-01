@@ -16,6 +16,10 @@ Praser::~Praser() {
 void Praser::praserInit() {
 	Block wholeBlock;
 	blockStack.push_back(wholeBlock);
+
+	build_in_function.insert("read");
+	build_in_function.insert("write");
+
 	praserGramTree(root);		//开始分析语法树
 }
 
@@ -420,11 +424,23 @@ struct gramTree* Praser::praser_function_definition(struct gramTree* node) {
 	
 	string funcType = type_specifier->left->content;
 	string funcName = declarator->left->left->content;
+
+	if (build_in_function.find(funcName) != build_in_function.end()) {
+		error(declarator->left->left->line, "Function name can't be bulid in function.");
+	}
+
+	if (funcPool.find(funcName) != funcPool.end()) {
+		if (funcPool[funcName].isdefinited) {
+			error(declarator->left->left->line, "Function " + funcName + " is duplicated definition.");
+		}
+	}
+
 	//进入新的block
 	Block funBlock;
 	funBlock.isfunc = true;
 	funBlock.func.name = funcName;
 	funBlock.func.rtype = funcType;
+	funBlock.func.isdefinited = true;
 	//将函数记录在块内并添加到函数池
 	blockStack.push_back(funBlock);
 	funcPool.insert({funcName,funBlock.func});
@@ -959,20 +975,44 @@ varNode Praser::praser_postfix_expression(struct gramTree* post_exp) {
 	else if (post_exp->left->right->name == "(") {
 		//函数调用
 		string funcName = post_exp->left->left->left->content;
-		if (post_exp->left->right->right->name == "argument_expression_list") {
-			gramTree* argument_exp_list = post_exp->left->right->right;
-			praser_argument_expression_list(argument_exp_list, funcName);
-			//cout << "funcCall" << endl;
+		varNode newNode;
+		if (build_in_function.find(funcName) != build_in_function.end()) {
+			if (funcName == "read") {
+				string tempname = "_temp" + inttostr(innerCode.tempNum);
+				++innerCode.tempNum;
 
+				newNode = createTempVar(tempname, "int");
+				innerCode.addCode("READ " + tempname);
+			}
+			else if (funcName == "write") {
+				gramTree* argu_exp_list = post_exp->left->right->right;
+				if (argu_exp_list->left->name != "assignment_expression") {
+					error(argu_exp_list->left->line, "function write has just one parameter");
+				}
+				varNode rnode = praser_assignment_expression(argu_exp_list->left);
+				innerCode.addCode("WRITE " + rnode.name);
+				return rnode;
+			}
 		}
-		string tempname = "_temp" + inttostr(innerCode.tempNum);
-		++innerCode.tempNum;
+		else {
+			if (funcPool.find(funcName) == funcPool.end()) {
+				error(post_exp->left->left->left->line, "Undefined function " + funcName);
+			}
 
-		varNode newNode = createTempVar(tempname, funcPool[funcName].rtype);
-		innerCode.addCode(tempname + " := CALL " + funcName);
+			if (post_exp->left->right->right->name == "argument_expression_list") {
+				gramTree* argument_exp_list = post_exp->left->right->right;
+				praser_argument_expression_list(argument_exp_list, funcName);
+				//cout << "funcCall" << endl;
+
+			}
+			string tempname = "_temp" + inttostr(innerCode.tempNum);
+			++innerCode.tempNum;
+
+			newNode = createTempVar(tempname, funcPool[funcName].rtype);
+			innerCode.addCode(tempname + " := CALL " + funcName);
+		}
 
 		return newNode;
-
 		
 	}
 	else if (post_exp->left->right->name == "INC_OP") {

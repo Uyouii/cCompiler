@@ -4,6 +4,7 @@
 #include "tree.h"
 #include "innerCode.h"
 #include <vector>
+#include <set>
 
 extern struct gramTree* root;
 
@@ -20,6 +21,7 @@ private:
 	map<string, funcNode> funcPool;			//函数池
 	vector<Block> blockStack;				//维护的栈
 	InnerCode innerCode;					//中间代码生成工具
+	set<string> build_in_function;
 
 	void praserInit();
 	void praserGramTree(struct gramTree* node);
