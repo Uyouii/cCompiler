@@ -32,8 +32,8 @@ private:
 	void praser_init_declarator(string, struct gramTree* );			//分析praser_init_declarator的节点
 
 	struct gramTree* praser_function_definition(struct gramTree*);
-	void praser_parameter_list(struct gramTree*,string);			//获取函数形参列表
-	void praser_parameter_declaration(struct gramTree*, string);	//获取函数单个形参
+	void praser_parameter_list(struct gramTree*,string,bool);			//获取函数形参列表
+	void praser_parameter_declaration(struct gramTree*, string,bool);	//获取函数单个形参
 
 	struct gramTree* praser_statement(struct gramTree*);
 

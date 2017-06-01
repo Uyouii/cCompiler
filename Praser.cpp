@@ -17,6 +17,7 @@ void Praser::praserInit() {
 	Block wholeBlock;
 	blockStack.push_back(wholeBlock);
 
+	//内置函数
 	build_in_function.insert("read");
 	build_in_function.insert("write");
 
@@ -459,7 +460,7 @@ struct gramTree* Praser::praser_function_definition(struct gramTree* node) {
 
 	//获取函数形参列表
 	if(declarator->left->right->right->name == "parameter_list")
-		praser_parameter_list(declarator->left->right->right, funcName);
+		praser_parameter_list(declarator->left->right->right, funcName,true);
 
 	//此时函数池中的func已经添加了参数列表
 	funcNode func = funcPool[funcName];
@@ -488,22 +489,22 @@ struct gramTree* Praser::praser_function_definition(struct gramTree* node) {
 	return node->right;
 }
 
-//获取函数形参列表
-void Praser::praser_parameter_list(struct gramTree* node,string funcName) {
+//获取函数形参列表，函数定义需要获取形参，声明则不需要
+void Praser::praser_parameter_list(struct gramTree* node,string funcName,bool definite) {
 	if (node->left->name == "parameter_list") {
-		praser_parameter_list(node->left, funcName);
+		praser_parameter_list(node->left, funcName,definite);
 	}
 	else if (node->left->name == "parameter_declaration") {
-		praser_parameter_declaration(node->left,funcName);
+		praser_parameter_declaration(node->left,funcName,definite);
 	}
 
 	if (node->right->name == ",") {
-		praser_parameter_declaration(node->right->right, funcName);
+		praser_parameter_declaration(node->right->right, funcName,definite);
 	}
 }
 
-//获取单个形参内容
-void Praser::praser_parameter_declaration(struct gramTree* node, string funcName) {
+//获取单个形参内容,函数定义需要获取形参，声明则不需要
+void Praser::praser_parameter_declaration(struct gramTree* node, string funcName,bool definite) {
 	//cout << "praser_parameter_declaration" << endl;
 	gramTree* type_specifier = node->left;
 	gramTree* declarator = node->left->right;
@@ -517,14 +518,18 @@ void Praser::praser_parameter_declaration(struct gramTree* node, string funcName
 	varNode newnode;
 	newnode.name = varName;
 	newnode.type = typeName;
-	newnode.num = innerCode.varNum++;
-	blockStack.back().func.paralist.push_back(newnode);
+	if (definite) {
+		newnode.num = innerCode.varNum++;
+		blockStack.back().func.paralist.push_back(newnode);
+	}
+
 	funcPool[funcName].paralist.push_back(newnode);
 	
 	//将函数的形参添加到当前块的变量池中
 	blockStack.back().varMap.insert({varName,newnode});
 
-	innerCode.addCode(innerCode.createCodeforParameter(newnode));
+	if(definite)
+		innerCode.addCode(innerCode.createCodeforParameter(newnode));
 }
 
 
@@ -601,7 +606,51 @@ void Praser::praser_init_declarator(string vartype, struct gramTree* node) {
 				newFunc.rtype = funcType;
 				funcPool.insert({ funcName,newFunc });
 				//分析函数形参列表
-				praser_parameter_list(parameter_list,funcName);
+				praser_parameter_list(parameter_list,funcName,false);
+			}
+			//数组声明
+			else if (declarator->left->right->name == "[") {
+				string arrayName = declarator->left->left->content;
+				string arrayType = vartype;
+				gramTree* assign_exp = declarator->left->right->right;
+				varNode rnode = praser_assignment_expression(assign_exp);
+
+				if (rnode.type != "int") {
+					error(declarator->left->right->line,"Array size must be int.");
+				}
+				
+
+				varNode tnode;
+				if (arrayType == "int") {
+					//创建一个新的临时变量来储存数组的大小
+					string tempname = "temp" + inttostr(innerCode.tempNum);
+					++innerCode.tempNum;
+					tnode = createTempVar(tempname, "int");
+
+					blockStack.back().varMap.insert({ tempname,tnode });
+					innerCode.addCode(tnode.name + " := #4 * " + rnode.name);
+				}
+				else if (arrayType == "double") {
+					//创建一个新的临时变量来储存数组的大小
+					string tempname = "temp" + inttostr(innerCode.tempNum);
+					++innerCode.tempNum;
+					tnode = createTempVar(tempname, "int");
+
+					blockStack.back().varMap.insert({ tempname,tnode });
+					innerCode.addCode(tnode.name + " := #8 * " + rnode.name);
+				}
+				else if (arrayType == "double") {
+					tnode = rnode;
+				}
+				
+
+				arrayNode anode;
+				anode.name = arrayName;
+				anode.type = arrayType;
+				anode.num = innerCode.arrayNum++;
+				innerCode.addCode("DEC " + innerCode.getarrayNodeName(anode) + " " + tnode.name);
+
+				blockStack.back().arrayMap.insert({ arrayName,anode });
 			}
 		}
 	}
@@ -661,7 +710,7 @@ varNode Praser::praser_assignment_expression(struct gramTree* assign_exp) {	//返
 			node3 = node2;
 		}
 		else {
-			string tempname = "_temp" + inttostr(innerCode.tempNum);
+			string tempname = "temp" + inttostr(innerCode.tempNum);
 			++innerCode.tempNum;
 			node3 = createTempVar(tempname, node1.type);
 
@@ -749,7 +798,7 @@ varNode Praser::praser_logical_or_expression(struct gramTree* logical_or_exp) {
 			error(logical_or_exp->left->right->line, "Logical Or operation should only used to bool. ");
 		}
 
-		string tempname = "_temp" + inttostr(innerCode.tempNum);
+		string tempname = "temp" + inttostr(innerCode.tempNum);
 		++innerCode.tempNum;
 		varNode newnode = createTempVar(tempname, node1.type);
 
@@ -775,7 +824,7 @@ varNode Praser::praser_logical_and_expression(struct gramTree* logical_and_exp) 
 			error(logical_and_exp->left->right->line, "Logical And operation should only used to bool. ");
 		}
 
-		string tempname = "_temp" + inttostr(innerCode.tempNum);
+		string tempname = "temp" + inttostr(innerCode.tempNum);
 		++innerCode.tempNum;
 		varNode newnode = createTempVar(tempname, node1.type);
 		blockStack.back().varMap.insert({ tempname,newnode });
@@ -800,7 +849,7 @@ varNode Praser::praser_inclusive_or_expression(struct gramTree* inclusive_or_exp
 			error(inclusive_or_exp->left->right->line, "Inclusive Or operation should only used to int. ");
 		}
 
-		string tempname = "_temp" + inttostr(innerCode.tempNum);
+		string tempname = "temp" + inttostr(innerCode.tempNum);
 		++innerCode.tempNum;
 		varNode newnode = createTempVar(tempname, node1.type);
 		blockStack.back().varMap.insert({ tempname,newnode });
@@ -823,7 +872,7 @@ varNode Praser::praser_exclusive_or_expression(struct gramTree *exclusive_or_exp
 			error(exclusive_or_exp->left->right->line, "Exclusive Or operation should only used to int. ");
 		}
 
-		string tempname = "_temp" + inttostr(innerCode.tempNum);
+		string tempname = "temp" + inttostr(innerCode.tempNum);
 		++innerCode.tempNum;
 		varNode newnode = createTempVar(tempname, node1.type);
 		blockStack.back().varMap.insert({ tempname,newnode });
@@ -845,7 +894,7 @@ varNode Praser::praser_and_expression(struct gramTree* and_exp) {
 			error(and_exp->left->right->line, "And operation should only used to int. ");
 		}
 
-		string tempname = "_temp" + inttostr(innerCode.tempNum);
+		string tempname = "temp" + inttostr(innerCode.tempNum);
 		++innerCode.tempNum;
 
 		varNode newnode = createTempVar(tempname, node1.type);
@@ -875,7 +924,7 @@ varNode Praser::praser_equality_expression(struct gramTree* equality_exp) {
 			error(equality_exp->left->right->line, "Different type for two variables.");
 		}
 
-		string tempname = "_temp" + inttostr(innerCode.tempNum);
+		string tempname = "temp" + inttostr(innerCode.tempNum);
 		++innerCode.tempNum;
 
 		varNode newnode = createTempVar(tempname, "bool");
@@ -904,7 +953,7 @@ varNode Praser::praser_relational_expression(struct gramTree* relational_exp) {
 				error(relational_exp->left->right->line, "Different type for two variables.");
 			}
 
-			string tempname = "_temp" + inttostr(innerCode.tempNum);
+			string tempname = "temp" + inttostr(innerCode.tempNum);
 			++innerCode.tempNum;
 
 			varNode newnode = createTempVar(tempname, "bool");
@@ -934,7 +983,7 @@ varNode Praser::praser_shift_expression(struct gramTree*shift_exp) {
 			error(shift_exp->left->right->line, "Shift operation should only used to int. ");
 		}
 
-		string tempname = "_temp" + inttostr(innerCode.tempNum);
+		string tempname = "temp" + inttostr(innerCode.tempNum);
 		++innerCode.tempNum;
 
 		varNode newnode = createTempVar(tempname, node1.type);
@@ -959,7 +1008,7 @@ varNode Praser::praser_additive_expression(struct gramTree* additive_exp) {
 			error(additive_exp->left->right->line, "Different type for two variables.");
 		}
 
-		string tempname = "_temp" + inttostr(innerCode.tempNum);
+		string tempname = "temp" + inttostr(innerCode.tempNum);
 		++innerCode.tempNum;
 		varNode newnode = createTempVar(tempname, node1.type);
 		blockStack.back().varMap.insert({ tempname,newnode});
@@ -984,7 +1033,7 @@ varNode Praser::praser_multiplicative_expression(struct gramTree* mult_exp) {
 			error(mult_exp->left->right->line, "Different type for two variables.");
 		}
 
-		string tempname = "_temp" + inttostr(innerCode.tempNum);
+		string tempname = "temp" + inttostr(innerCode.tempNum);
 		++innerCode.tempNum;
 		varNode newNode = createTempVar(tempname, node1.type);
 		blockStack.back().varMap.insert({ tempname,newNode });
@@ -1025,7 +1074,7 @@ varNode Praser::praser_postfix_expression(struct gramTree* post_exp) {
 		varNode newNode;
 		if (build_in_function.find(funcName) != build_in_function.end()) {
 			if (funcName == "read") {
-				string tempname = "_temp" + inttostr(innerCode.tempNum);
+				string tempname = "temp" + inttostr(innerCode.tempNum);
 				++innerCode.tempNum;
 
 				newNode = createTempVar(tempname, "int");
@@ -1037,7 +1086,7 @@ varNode Praser::praser_postfix_expression(struct gramTree* post_exp) {
 					error(argu_exp_list->left->line, "function write has just one parameter");
 				}
 				varNode rnode = praser_assignment_expression(argu_exp_list->left);
-				innerCode.addCode("WRITE " + rnode.name);
+				innerCode.addCode("WRITE " + innerCode.getNodeName(rnode));
 				return rnode;
 			}
 		}
@@ -1052,7 +1101,7 @@ varNode Praser::praser_postfix_expression(struct gramTree* post_exp) {
 				//cout << "funcCall" << endl;
 
 			}
-			string tempname = "_temp" + inttostr(innerCode.tempNum);
+			string tempname = "temp" + inttostr(innerCode.tempNum);
 			++innerCode.tempNum;
 
 			newNode = createTempVar(tempname, funcPool[funcName].rtype);
@@ -1107,7 +1156,7 @@ varNode Praser::praser_primary_expression(struct gramTree* primary_exp) {
 	}
 	else if (primary_exp->left->name == "TRUE" || primary_exp->left->name == "FALSE") {
 		string content = primary_exp->left->content;
-		string tempname = "_temp" + inttostr(innerCode.tempNum);
+		string tempname = "temp" + inttostr(innerCode.tempNum);
 		++innerCode.tempNum;
 		varNode newNode = createTempVar(tempname, "bool");
 		blockStack.back().varMap.insert({ tempname,newNode });
@@ -1120,7 +1169,7 @@ varNode Praser::praser_primary_expression(struct gramTree* primary_exp) {
 	}
 	else if (primary_exp->left->name == "CONSTANT_INT") {
 		string content = primary_exp->left->content;
-		string tempname = "_temp" + inttostr(innerCode.tempNum);
+		string tempname = "temp" + inttostr(innerCode.tempNum);
 		++innerCode.tempNum;
 		
 		varNode newNode = createTempVar(tempname, "int");
@@ -1130,7 +1179,7 @@ varNode Praser::praser_primary_expression(struct gramTree* primary_exp) {
 	}
 	else if (primary_exp->left->name == "CONSTANT_DOUBLE") {
 		string content = primary_exp->left->content;
-		string tempname = "_temp" + inttostr(innerCode.tempNum);
+		string tempname = "temp" + inttostr(innerCode.tempNum);
 		++innerCode.tempNum;
 
 		varNode newNode = createTempVar(tempname, "double");

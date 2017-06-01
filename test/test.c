@@ -1,14 +1,23 @@
-
-int f(int i,int j);
-
+int f(int a,int b);
 
 int main() {
-    int a = read();
-    int i = f(a,a);
-    write(1);
-    return a;
+    int x = read();
+    if(x > 0) {
+        x = f(x,2 * x);
+    }
+    else if( x < 0) {
+        x = 0 - f(x,2*x);
+    }
+    else x = 0;
+    write(x);
+    return 0;
 }
 
-int f(int i,int j) {
-    return i + j;
+int f(int a,int b) {
+    int result = 0;
+    for(int i = 0; i < 10; i = i + 1) {
+        result += (a & b) * (a | b) + result;
+    }
+
+    return result;
 }
