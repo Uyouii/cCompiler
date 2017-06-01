@@ -1051,10 +1051,36 @@ varNode Praser::praser_unary_expression(struct gramTree*unary_exp) {
 		return praser_postfix_expression(post_exp);
 	}
 	else if (unary_exp->left->name == "INC_OP") {
+		varNode rnode = praser_unary_expression(unary_exp->left->right);
+		if (rnode.type != "int")
+			error(unary_exp->left->right->line, "++ operation can only use for int type.");
+
+		//变量储存的是地址
+		if (rnode.useAddress) {
+			innerCode.addCode("*" + rnode.name + " := *" + rnode.name + " + #1");
+		}
+		else {
+			innerCode.addCode(innerCode.getNodeName(rnode) + " := " + innerCode.getNodeName(rnode) + " + #1");
+		}
+
+		return rnode;
 
 	}
 	else if (unary_exp->left->name == "DEC_OP") {
 
+		varNode rnode = praser_unary_expression(unary_exp->left->right);
+		if (rnode.type != "int")
+			error(unary_exp->left->right->line, "-- operation can only use for int type.");
+
+		//变量储存的是地址
+		if (rnode.useAddress) {
+			innerCode.addCode("*" + rnode.name + " := *" + rnode.name + " - #1");
+		}
+		else {
+			innerCode.addCode(innerCode.getNodeName(rnode) + " := " + innerCode.getNodeName(rnode) + " - #1");
+		}
+
+		return rnode;
 	}
 	else if (unary_exp->left->name == "unary_operator") {
 
@@ -1148,10 +1174,51 @@ varNode Praser::praser_postfix_expression(struct gramTree* post_exp) {
 		
 	}
 	else if (post_exp->left->right->name == "INC_OP") {
+		varNode rnode = praser_postfix_expression(post_exp->left);
 
+		if (rnode.type != "int")
+			error(post_exp->left->right->line, "++ operation can only use for int type.");
+
+		string tempname = "temp" + inttostr(innerCode.tempNum);
+		++innerCode.tempNum;
+		varNode newnode = createTempVar(tempname, "int");
+		blockStack.back().varMap.insert({ tempname,newnode });
+
+		//变量储存的是地址
+		if (rnode.useAddress) {
+			innerCode.addCode(tempname + " := *" + rnode.name);
+			innerCode.addCode("*" + rnode.name + " := *" + rnode.name + " + #1");
+		}
+		else {
+			innerCode.addCode(tempname += " := " + innerCode.getNodeName(rnode));
+			innerCode.addCode(innerCode.getNodeName(rnode) +  " := " + innerCode.getNodeName(rnode) + " + #1");
+		}
+
+		return newnode;
 	}
 	else if (post_exp->left->right->name == "DEC_OP") {
 
+		varNode rnode = praser_postfix_expression(post_exp->left);
+
+		if (rnode.type != "int")
+			error(post_exp->left->right->line, "-- operation can only use for int type.");
+
+		string tempname = "temp" + inttostr(innerCode.tempNum);
+		++innerCode.tempNum;
+		varNode newnode = createTempVar(tempname, "int");
+		blockStack.back().varMap.insert({ tempname,newnode });
+
+		//变量储存的是地址
+		if (rnode.useAddress) {
+			innerCode.addCode(tempname + " := *" + rnode.name);
+			innerCode.addCode("*" + rnode.name + " := *" + rnode.name + " - #1");
+		}
+		else {
+			innerCode.addCode(tempname += " := " + innerCode.getNodeName(rnode));
+			innerCode.addCode(innerCode.getNodeName(rnode) + " := " + innerCode.getNodeName(rnode) + " - #1");
+		}
+
+		return newnode;
 	}
 }
 
