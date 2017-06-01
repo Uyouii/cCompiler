@@ -132,7 +132,7 @@ void Praser::praser_selection_statement(struct gramTree* node) {
 
 			string label1 = innerCode.getLabelName();
 			string label2 = innerCode.getLabelName();
-			innerCode.addCode("IF " + innerCode.getNodeName(exp_rnode) + " != " + " 0 GOTO " + label1);
+			innerCode.addCode("IF " + innerCode.getNodeName(exp_rnode) + " != " + " #0 GOTO " + label1);
 			innerCode.addCode("GOTO " + label2);
 			innerCode.addCode(label1 + " :");
 
@@ -158,7 +158,7 @@ void Praser::praser_selection_statement(struct gramTree* node) {
 			string label1 = innerCode.getLabelName();
 			string label2 = innerCode.getLabelName();
 			string label3 = innerCode.getLabelName();
-			innerCode.addCode("IF " + innerCode.getNodeName(exp_rnode) + " != " + " 0 GOTO " + label1);
+			innerCode.addCode("IF " + innerCode.getNodeName(exp_rnode) + " != " + " #0 GOTO " + label1);
 			innerCode.addCode("GOTO " + label2);
 			innerCode.addCode(label1 + " :");
 
@@ -208,7 +208,7 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 
 		varNode var = praser_expression(expression);
 
-		innerCode.addCode("IF " + innerCode.getNodeName(var) + " != " + "0 GOTO " + label2);
+		innerCode.addCode("IF " + innerCode.getNodeName(var) + " != " + "#0 GOTO " + label2);
 		innerCode.addCode("GOTO " + label3);
 		innerCode.addCode(label2 + " :");
 
@@ -237,30 +237,176 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 
 		varNode var = praser_expression(expression);
 
-		innerCode.addCode("IF " + innerCode.getNodeName(var) + " == " + "0 GOTO " + label2);
+		innerCode.addCode("IF " + innerCode.getNodeName(var) + " == " + "#0 GOTO " + label2);
 		innerCode.addCode("GOTO " + label1);
 		innerCode.addCode(label2 + " :");
+
+		//弹出添加的block
+		blockStack.pop_back();
 
 	}
 	else if (node->left->name == "FOR") {
 		if (node->left->right->right->name == "expression_statement") {
+			//FOR '(' expression_statement expression_statement ')'statement
 			if (node->left->right->right->right->right->name == ")") {
+				//添加一个新的block
+				Block newblock;
+				blockStack.push_back(newblock);
 
+				gramTree* exp_state1 = node->left->right->right;
+				gramTree* exp_state2 = exp_state1->right;
+				gramTree* statement = exp_state2->right->right;
 
+				string label1 = innerCode.getLabelName();
+				string label2 = innerCode.getLabelName();
+				string label3 = innerCode.getLabelName();
+
+				if (exp_state1->left->name == "expression") {
+					praser_expression(exp_state1->left);
+				}
+				innerCode.addCode(label1 + " :");
+
+				varNode var;
+				if (exp_state2->left->name == "expression") {
+					var = praser_expression(exp_state2->left);
+					innerCode.addCode("IF " + innerCode.getNodeName(var) + " != " + "#0 GOTO " + label2);
+				}
+				else {
+					innerCode.addCode("GOTO " + label2);
+				}
+
+				innerCode.addCode("GOTO " + label3);
+				innerCode.addCode(label2 + " :");
+
+				praser_statement(statement);
+
+				innerCode.addCode("GOTO " + label1);
+				innerCode.addCode(label3 + " :");
+
+				//弹出添加的block
+				blockStack.pop_back();
 			}
-			else if(node->left->right->right->right->right->name == "expression") {
+			//FOR ( expression_statement expression_statement expression ) statement
+			else if (node->left->right->right->right->right->name == "expression") {
+				//添加一个新的block
+				Block newblock;
+				blockStack.push_back(newblock);
 
+				gramTree* exp_state1 = node->left->right->right;
+				gramTree* exp_state2 = exp_state1->right;
+				gramTree* exp = exp_state2->right;
+				gramTree* statement = exp->right->right;
 
+				string label1 = innerCode.getLabelName();
+				string label2 = innerCode.getLabelName();
+				string label3 = innerCode.getLabelName();
+
+				if (exp_state1->left->name == "expression") {
+					praser_expression(exp_state1->left);
+				}
+				innerCode.addCode(label1 + " :");
+
+				varNode var;
+				if (exp_state2->left->name == "expression") {
+					var = praser_expression(exp_state2->left);
+					innerCode.addCode("IF " + innerCode.getNodeName(var) + " != " + "#0 GOTO " + label2);
+				}
+				else {
+					innerCode.addCode("GOTO " + label2);
+				}
+
+				innerCode.addCode("GOTO " + label3);
+				innerCode.addCode(label2 + " :");
+
+				praser_statement(statement);
+
+				praser_expression(exp);
+
+				innerCode.addCode("GOTO " + label1);
+				innerCode.addCode(label3 + " :");
+
+				//弹出添加的block
+				blockStack.pop_back();
 			}
 		}
-		else if (node->left->right->right->name == "declaration") {
+		if (node->left->right->right->name == "declaration") {
+			//FOR '(' declaration expression_statement ')' statement
 			if (node->left->right->right->right->right->name == ")") {
+				//添加一个新的block
+				Block newblock;
+				blockStack.push_back(newblock);
 
+				gramTree *declaration = node->left->right->right;
+				gramTree *expression_statement = declaration->right;
+				gramTree *statement = expression_statement->right->right;
+
+				string label1 = innerCode.getLabelName();
+				string label2 = innerCode.getLabelName();
+				string label3 = innerCode.getLabelName();
+
+				praser_declaration(declaration);
+				innerCode.addCode(label1 + " :");
+
+				varNode var;
+				if (expression_statement->left->name == "expression") {
+					var = praser_expression(expression_statement->left);
+					innerCode.addCode("IF " + innerCode.getNodeName(var) + " != " + "#0 GOTO " + label2);
+				}
+				else {
+					innerCode.addCode("GOTO " + label2);
+				}
+				innerCode.addCode("GOTO " + label3);
+				innerCode.addCode(label2 + " :");
+
+				praser_statement(statement);
+
+				//cout << "here" << endl;
+				innerCode.addCode("GOTO " + label1);
+				innerCode.addCode(label3 + " :");
+
+				//弹出添加的block
+				blockStack.pop_back();
 
 			}
+			//FOR ( declaration expression_statement expression ) statement
 			else if (node->left->right->right->right->right->name == "expression") {
+				//添加一个新的block
+				Block newblock;
+				blockStack.push_back(newblock);
+
+				gramTree *declaration = node->left->right->right;
+				gramTree *expression_statement = declaration->right;
+				gramTree *expression = expression_statement->right;
+				gramTree *statement = expression->right->right;
+
+				string label1 = innerCode.getLabelName();
+				string label2 = innerCode.getLabelName();
+				string label3 = innerCode.getLabelName();
+
+				praser_declaration(declaration);
+				innerCode.addCode(label1 + " :");
+
+				varNode var;
+				if (expression_statement->left->name == "expression") {
+					var = praser_expression(expression_statement->left);
+					innerCode.addCode("IF " + innerCode.getNodeName(var) + " != " + "#0 GOTO " + label2);
+				}
+				else {
+					innerCode.addCode("GOTO " + label2);
+				}
+				innerCode.addCode("GOTO " + label3);
+				innerCode.addCode(label2 + " :");
+
+				praser_statement(statement);
+
+				praser_expression(expression);
+				//cout << "here" << endl;
+				innerCode.addCode("GOTO " + label1);
+				innerCode.addCode(label3 + " :");
 
 
+				//弹出添加的block
+				blockStack.pop_back();
 			}
 		}
 	}
@@ -878,7 +1024,11 @@ varNode Praser::praser_primary_expression(struct gramTree* primary_exp) {
 		++innerCode.tempNum;
 		varNode newNode = createTempVar(tempname, "bool");
 		blockStack.back().varMap.insert({ tempname,newNode });
-		innerCode.addCode(tempname + " := " + content);
+		if(primary_exp->left->name == "TRUE") 
+			innerCode.addCode(tempname + " := #1");
+		else {
+			innerCode.addCode(tempname + " := #0");
+		}
 		return newNode;
 	}
 	else if (primary_exp->left->name == "CONSTANT_INT") {
@@ -888,7 +1038,7 @@ varNode Praser::praser_primary_expression(struct gramTree* primary_exp) {
 		
 		varNode newNode = createTempVar(tempname, "int");
 		blockStack.back().varMap.insert({ tempname,newNode });
-		innerCode.addCode(tempname + " := "  + content);
+		innerCode.addCode(tempname + " := #"  + content);
 		return newNode;
 	}
 	else if (primary_exp->left->name == "CONSTANT_DOUBLE") {
@@ -899,7 +1049,7 @@ varNode Praser::praser_primary_expression(struct gramTree* primary_exp) {
 		varNode newNode = createTempVar(tempname, "double");
 
 		blockStack.back().varMap.insert({ tempname,newNode});
-		innerCode.addCode(tempname + " := " + content);
+		innerCode.addCode(tempname + " := F" + content);
 		return newNode;
 	}
 	else if (primary_exp->left->name == "(") {
