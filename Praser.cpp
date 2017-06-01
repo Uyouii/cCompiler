@@ -76,16 +76,17 @@ void Praser::praser_jump_statement(struct gramTree* node) {
 
 	}
 	else if (node->left->name == "RETURN") {
+		string funcType = getFuncRType();
 		if (node->left->right->name == "expression") {//return expression
 			varNode rnode = praser_expression(node->left->right);
 			innerCode.addCode(innerCode.createCodeforReturn(rnode));
-			if (rnode.type != blockStack.back().func.rtype) {
+			if (rnode.type != funcType) {
 				error(node->left->right->line, "return type doesn't equal to function return type.");
 			}
 		}
 		else if (node->left->right->name == ";"){//return ;
 			innerCode.addCode("RETURN");
-			if (blockStack.back().func.rtype != "void") {
+			if (funcType != "void") {
 				error(node->left->right->line, "You should return " + blockStack.back().func.rtype);
 			}
 		}
@@ -220,22 +221,45 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 		blockStack.pop_back();
 	}
 	else if (node->left->name == "DO") {
+		//添加一个新的block
+		Block newblock;
+		blockStack.push_back(newblock);
+
+		struct gramTree* statement = node->left->right;
+		struct gramTree* expression = node->left->right->right->right->right;
+
+		string label1 = innerCode.getLabelName();
+		string label2 = innerCode.getLabelName();
+
+		innerCode.addCode(label1 + " :");
+
+		praser_statement(statement);
+
+		varNode var = praser_expression(expression);
+
+		innerCode.addCode("IF " + innerCode.getNodeName(var) + " == " + "0 GOTO " + label2);
+		innerCode.addCode("GOTO " + label1);
+		innerCode.addCode(label2 + " :");
 
 	}
 	else if (node->left->name == "FOR") {
 		if (node->left->right->right->name == "expression_statement") {
 			if (node->left->right->right->right->right->name == ")") {
 
+
 			}
 			else if(node->left->right->right->right->right->name == "expression") {
+
 
 			}
 		}
 		else if (node->left->right->right->name == "declaration") {
 			if (node->left->right->right->right->right->name == ")") {
 
+
 			}
 			else if (node->left->right->right->right->right->name == "expression") {
+
 
 			}
 		}
@@ -910,6 +934,14 @@ struct varNode Praser::lookupNode(string name) {
 	return temp;
 }
 
+string Praser::getFuncRType() {
+	int N = blockStack.size();
+	for (int i = N - 1; i >= 0; i--) {
+		if (blockStack[i].isfunc)
+			return blockStack[i].func.rtype;
+	}
+	return "";
+}
 
 void Praser::error(int line, string error) {
 

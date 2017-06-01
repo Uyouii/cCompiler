@@ -21,7 +21,7 @@ struct varNode {
 struct funcNode {
 	string name;				//函数名
 	string rtype;				//函数返回类型
-	vector<varNode> paralist;	//记录形参列表,倒着存的
+	vector<varNode> paralist;	//记录形参列表
 };
 
 //数组节点

@@ -64,6 +64,7 @@ private:
 	string lookupVar(string name);			//返回变量类型，找不到返回""
 	bool lookupCurruntVar(string name);		//查找当前块的var
 	struct varNode lookupNode(string name);	//返回变量节点
+	string getFuncRType();
 
 	struct varNode createTempVar(string name, string type);
 
