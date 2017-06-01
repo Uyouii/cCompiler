@@ -429,9 +429,19 @@ struct gramTree* Praser::praser_function_definition(struct gramTree* node) {
 		error(declarator->left->left->line, "Function name can't be bulid in function.");
 	}
 
+	bool isdeclared = false;
+	funcNode declarFunc;
 	if (funcPool.find(funcName) != funcPool.end()) {
-		if (funcPool[funcName].isdefinited) {
+		//函数重复定义
+		if (funcPool[funcName].isdefinied) {
 			error(declarator->left->left->line, "Function " + funcName + " is duplicated definition.");
+		}
+		//函数事先声明过但是没有定义
+		else {
+			isdeclared = true;
+			//先删除掉函数池中的函数的声明
+			declarFunc = funcPool[funcName];
+			funcPool.erase(funcPool.find(funcName));
 		}
 	}
 
@@ -440,7 +450,7 @@ struct gramTree* Praser::praser_function_definition(struct gramTree* node) {
 	funBlock.isfunc = true;
 	funBlock.func.name = funcName;
 	funBlock.func.rtype = funcType;
-	funBlock.func.isdefinited = true;
+	funBlock.func.isdefinied = true;
 	//将函数记录在块内并添加到函数池
 	blockStack.push_back(funBlock);
 	funcPool.insert({funcName,funBlock.func});
@@ -451,8 +461,28 @@ struct gramTree* Praser::praser_function_definition(struct gramTree* node) {
 	if(declarator->left->right->right->name == "parameter_list")
 		praser_parameter_list(declarator->left->right->right, funcName);
 
+	//此时函数池中的func已经添加了参数列表
+	funcNode func = funcPool[funcName];
+	//如果函数事先声明过，则比较函数的参数列表和返回类型
+	if (isdeclared) {
+		if (func.rtype != declarFunc.rtype) {
+			error(type_specifier->left->line, "Function return type doesn't equal to the function declared before.");
+		}
+		cout << funBlock.func.paralist.size() << endl;
+		if (func.paralist.size() != declarFunc.paralist.size()) {
+			error(declarator->left->right->right->line, "The number of function parameters doesn't equal to the function declared before.");
+		}
+		for (int i = 0; i < funBlock.func.paralist.size(); i++) {
+			if (func.paralist[i].type != declarFunc.paralist[i].type)
+				error(declarator->left->right->right->line, "The parameter " + funBlock.func.paralist[i].name + "'s type doesn't equal to the function declared before." );
+		}
+	}
+	//更新Block中func的参数列表
+	funBlock.func = func;
+	//分析函数的正文
 	praser_compound_statement(compound_statement);
-	//compound_statement结束后需要pop block
+
+	//函数结束后，弹出相应的block
 	blockStack.pop_back();
 
 	return node->right;
@@ -537,7 +567,7 @@ void Praser::praser_init_declarator_list(string vartype, struct gramTree* node) 
 }
 
 
-//分析变量初始化
+//分析变量初始化,不确定有无定义
 void Praser::praser_init_declarator(string vartype, struct gramTree* node) {
 	//cout << "at " << node->name << endl;
 	struct gramTree* declarator = node->left;
@@ -556,7 +586,24 @@ void Praser::praser_init_declarator(string vartype, struct gramTree* node) {
 			}
 			else error(declarator->left->line, "Variable multiple declaration.");
 		}
-		else error(declarator->left->line, "It's not a variable!");
+		else {
+			//函数声明
+			if (declarator->left->right->name == "(") {
+				string funcName = declarator->left->left->content;
+				string funcType = vartype;
+				if (blockStack.size() > 1) {
+					error(declarator->left->right->line, "Functinon declaration must at global environment.");
+				}
+				gramTree* parameter_list = declarator->left->right->right;
+				funcNode newFunc;
+				newFunc.isdefinied = false;
+				newFunc.name = funcName;
+				newFunc.rtype = funcType;
+				funcPool.insert({ funcName,newFunc });
+				//分析函数形参列表
+				praser_parameter_list(parameter_list,funcName);
+			}
+		}
 	}
 	else if (declarator->right->name == "=") {	//有初始化
 		//获取变量的名字
