@@ -137,7 +137,7 @@ void Praser::praser_selection_statement(struct gramTree* node) {
 
 			string label1 = innerCode.getLabelName();
 			string label2 = innerCode.getLabelName();
-			innerCode.addCode("IF " + innerCode.getNodeName(exp_rnode) + " != " + " #0 GOTO " + label1);
+			innerCode.addCode("IF " + innerCode.getNodeName(exp_rnode) + " != " + "#0 GOTO " + label1);
 			innerCode.addCode("GOTO " + label2);
 			innerCode.addCode(label1 + " :");
 
@@ -163,7 +163,7 @@ void Praser::praser_selection_statement(struct gramTree* node) {
 			string label1 = innerCode.getLabelName();
 			string label2 = innerCode.getLabelName();
 			string label3 = innerCode.getLabelName();
-			innerCode.addCode("IF " + innerCode.getNodeName(exp_rnode) + " != " + " #0 GOTO " + label1);
+			innerCode.addCode("IF " + innerCode.getNodeName(exp_rnode) + " != " + "#0 GOTO " + label1);
 			innerCode.addCode("GOTO " + label2);
 			innerCode.addCode(label1 + " :");
 
@@ -1083,7 +1083,38 @@ varNode Praser::praser_unary_expression(struct gramTree*unary_exp) {
 		return rnode;
 	}
 	else if (unary_exp->left->name == "unary_operator") {
+		string op = unary_exp->left->left->name;
+		varNode rnode = praser_unary_expression(unary_exp->left->right);
+		if (op == "+") {
 
+			if (rnode.type != "int" || rnode.type != "double")
+				error(unary_exp->left->left->line, "operator '+' can only used to int or double");
+			return rnode;
+		}
+		else if (op == "-") {
+
+			if (rnode.type != "int" || rnode.type != "double")
+				error(unary_exp->left->left->line, "operator '-' can only used to int or double");
+
+			string tempname = "temp" + inttostr(innerCode.tempNum);
+			++innerCode.tempNum;
+			varNode newnode = createTempVar(tempname, rnode.type);
+			blockStack.back().varMap.insert({ tempname,newnode });
+
+			if (rnode.useAddress) {
+				innerCode.addCode(tempname + " := #0 - *" + rnode.name);
+			}
+			else {
+				innerCode.addCode(tempname + " := #0 - " + innerCode.getNodeName(rnode));
+			}
+			return newnode;
+		}
+		else if (op == "~") {
+
+		}
+		else if (op == "!") {
+
+		}
 	}
 }
 
