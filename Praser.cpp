@@ -17,9 +17,19 @@ void Praser::praserInit() {
 	Block wholeBlock;
 	blockStack.push_back(wholeBlock);
 
-	//内置函数
-	build_in_function.insert("read");
-	build_in_function.insert("write");
+	funcNode writeNode;
+	writeNode.name = "write";
+	writeNode.rtype = "void";
+	varNode pnode;
+	pnode.type = "int";
+	writeNode.paralist.push_back(pnode);
+
+	funcPool.insert({ "write", writeNode });
+
+	funcNode readNode;
+	readNode.name = "read";
+	readNode.rtype = "int";
+	funcPool.insert({"read",readNode});
 
 	praserGramTree(root);		//开始分析语法树
 }
@@ -147,12 +157,12 @@ void Praser::praser_selection_statement(struct gramTree* node) {
 			string label2 = innerCode.getLabelName();
 			innerCode.addCode("IF " + innerCode.getNodeName(exp_rnode) + " != " + "#0 GOTO " + label1);
 			innerCode.addCode("GOTO " + label2);
-			innerCode.addCode(label1 + " :");
+			innerCode.addCode("LABEL " + label1 + " :");
 
 
 			praser_statement(statement);
 			
-			innerCode.addCode(label2 + " :");
+			innerCode.addCode("LABEL " + label2 + " :");
 
 			//弹出添加的block
 			blockStack.pop_back();
@@ -173,7 +183,7 @@ void Praser::praser_selection_statement(struct gramTree* node) {
 			string label3 = innerCode.getLabelName();
 			innerCode.addCode("IF " + innerCode.getNodeName(exp_rnode) + " != " + "#0 GOTO " + label1);
 			innerCode.addCode("GOTO " + label2);
-			innerCode.addCode(label1 + " :");
+			innerCode.addCode("LABEL " + label1 + " :");
 
 			praser_statement(statement1);
 			
@@ -182,14 +192,14 @@ void Praser::praser_selection_statement(struct gramTree* node) {
 			blockStack.pop_back();
 
 			//else
-			innerCode.addCode(label2 + " :");
+			innerCode.addCode("LABEL " + label2 + " :");
 
 			Block newblock2;
 			blockStack.push_back(newblock2);
 
 			praser_statement(statement2);
 
-			innerCode.addCode(label3 + " :");
+			innerCode.addCode("LABEL " + label3 + " :");
 
 			//弹出添加的block
 			blockStack.pop_back();
@@ -218,22 +228,22 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 		string label2 = innerCode.getLabelName();
 		string label3 = innerCode.getLabelName();
 
-		innerCode.addCode(label1 + " :");
+		innerCode.addCode("LABEL " + label1 + " :");
 
 		varNode var = praser_expression(expression);
 
 		innerCode.addCode("IF " + innerCode.getNodeName(var) + " != " + "#0 GOTO " + label2);
 		innerCode.addCode("GOTO " + label3);
-		innerCode.addCode(label2 + " :");
+		innerCode.addCode("LABEL " + label2 + " :");
 
 		praser_statement(statement);
 
 		innerCode.addCode("GOTO " + label1);
-		innerCode.addCode(label3 + " :");
+		innerCode.addCode("LABEL " + label3 + " :");
 		
 		//如果需要break
 		if (blockStack.back().breakLabelNum > 0) {
-			innerCode.addCode("LABEL" + inttostr(blockStack.back().breakLabelNum) + " :");
+			innerCode.addCode("LABEL label" + inttostr(blockStack.back().breakLabelNum) + " :");
 		}
 
 		//弹出添加的block
@@ -251,7 +261,7 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 		string label1 = innerCode.getLabelName();
 		string label2 = innerCode.getLabelName();
 
-		innerCode.addCode(label1 + " :");
+		innerCode.addCode("LABEL " + label1 + " :");
 
 		praser_statement(statement);
 
@@ -259,11 +269,11 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 
 		innerCode.addCode("IF " + innerCode.getNodeName(var) + " == " + "#0 GOTO " + label2);
 		innerCode.addCode("GOTO " + label1);
-		innerCode.addCode(label2 + " :");
+		innerCode.addCode("LABEL " + label2 + " :");
 
 		//如果需要break
 		if (blockStack.back().breakLabelNum > 0) {
-			innerCode.addCode("LABEL" + inttostr(blockStack.back().breakLabelNum) + " :");
+			innerCode.addCode("LABEL label" + inttostr(blockStack.back().breakLabelNum) + " :");
 		}
 
 		//弹出添加的block
@@ -290,7 +300,7 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 				if (exp_state1->left->name == "expression") {
 					praser_expression(exp_state1->left);
 				}
-				innerCode.addCode(label1 + " :");
+				innerCode.addCode("LABEL " + label1 + " :");
 
 				varNode var;
 				if (exp_state2->left->name == "expression") {
@@ -302,16 +312,16 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 				}
 
 				innerCode.addCode("GOTO " + label3);
-				innerCode.addCode(label2 + " :");
+				innerCode.addCode("LABEL " + label2 + " :");
 
 				praser_statement(statement);
 
 				innerCode.addCode("GOTO " + label1);
-				innerCode.addCode(label3 + " :");
+				innerCode.addCode("LABEL " + label3 + " :");
 
 				//如果需要break
 				if (blockStack.back().breakLabelNum > 0) {
-					innerCode.addCode("LABEL" + inttostr(blockStack.back().breakLabelNum) + " :");
+					innerCode.addCode("LABEL label" + inttostr(blockStack.back().breakLabelNum) + " :");
 				}
 
 				//弹出添加的block
@@ -336,7 +346,7 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 				if (exp_state1->left->name == "expression") {
 					praser_expression(exp_state1->left);
 				}
-				innerCode.addCode(label1 + " :");
+				innerCode.addCode("LABEL " + label1 + " :");
 
 				varNode var;
 				if (exp_state2->left->name == "expression") {
@@ -348,18 +358,18 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 				}
 
 				innerCode.addCode("GOTO " + label3);
-				innerCode.addCode(label2 + " :");
+				innerCode.addCode("LABEL " + label2 + " :");
 
 				praser_statement(statement);
 
 				praser_expression(exp);
 
 				innerCode.addCode("GOTO " + label1);
-				innerCode.addCode(label3 + " :");
+				innerCode.addCode("LABEL " + label3 + " :");
 
 				//如果需要break
 				if (blockStack.back().breakLabelNum > 0) {
-					innerCode.addCode("LABEL" + inttostr(blockStack.back().breakLabelNum) + " :");
+					innerCode.addCode("LABEL label" + inttostr(blockStack.back().breakLabelNum) + " :");
 				}
 
 				//弹出添加的block
@@ -383,7 +393,7 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 				string label3 = innerCode.getLabelName();
 
 				praser_declaration(declaration);
-				innerCode.addCode(label1 + " :");
+				innerCode.addCode("LABEL " + label1 + " :");
 
 				varNode var;
 				if (expression_statement->left->name == "expression") {
@@ -394,17 +404,17 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 					innerCode.addCode("GOTO " + label2);
 				}
 				innerCode.addCode("GOTO " + label3);
-				innerCode.addCode(label2 + " :");
+				innerCode.addCode("LABEL " + label2 + " :");
 
 				praser_statement(statement);
 
 				//cout << "here" << endl;
 				innerCode.addCode("GOTO " + label1);
-				innerCode.addCode(label3 + " :");
+				innerCode.addCode("LABEL " + label3 + " :");
 
 				//如果需要break
 				if (blockStack.back().breakLabelNum > 0) {
-					innerCode.addCode("LABEL" + inttostr(blockStack.back().breakLabelNum) + " :");
+					innerCode.addCode("LABEL label" + inttostr(blockStack.back().breakLabelNum) + " :");
 				}
 
 				//弹出添加的block
@@ -428,7 +438,7 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 				string label3 = innerCode.getLabelName();
 
 				praser_declaration(declaration);
-				innerCode.addCode(label1 + " :");
+				innerCode.addCode("LABEL " + label1 + " :");
 
 				varNode var;
 				if (expression_statement->left->name == "expression") {
@@ -439,18 +449,18 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 					innerCode.addCode("GOTO " + label2);
 				}
 				innerCode.addCode("GOTO " + label3);
-				innerCode.addCode(label2 + " :");
+				innerCode.addCode("LABEL " + label2 + " :");
 
 				praser_statement(statement);
 
 				praser_expression(expression);
 				//cout << "here" << endl;
 				innerCode.addCode("GOTO " + label1);
-				innerCode.addCode(label3 + " :");
+				innerCode.addCode("LABEL " + label3 + " :");
 
 				//如果需要break
 				if (blockStack.back().breakLabelNum > 0) {
-					innerCode.addCode("LABEL" + inttostr(blockStack.back().breakLabelNum) + " :");
+					innerCode.addCode("LABEL label" + inttostr(blockStack.back().breakLabelNum) + " :");
 				}
 
 				//弹出添加的block
@@ -469,9 +479,9 @@ struct gramTree* Praser::praser_function_definition(struct gramTree* node) {
 	string funcType = type_specifier->left->content;
 	string funcName = declarator->left->left->content;
 
-	if (build_in_function.find(funcName) != build_in_function.end()) {
+	/*if (build_in_function.find(funcName) != build_in_function.end()) {
 		error(declarator->left->left->line, "Function name can't be bulid in function.");
-	}
+	}*/
 
 	bool isdeclared = false;
 	funcNode declarFunc;
@@ -1162,6 +1172,7 @@ varNode Praser::praser_unary_expression(struct gramTree*unary_exp) {
 }
 
 varNode Praser::praser_postfix_expression(struct gramTree* post_exp) {
+	//cout << "here" << endl;
 	if (post_exp->left->name == "primary_expression") {
 		gramTree* primary_exp = post_exp->left;
 		return praser_primary_expression(primary_exp);
@@ -1208,47 +1219,54 @@ varNode Praser::praser_postfix_expression(struct gramTree* post_exp) {
 		//函数调用
 		string funcName = post_exp->left->left->left->content;
 		varNode newNode;
-		if (build_in_function.find(funcName) != build_in_function.end()) {
-			if (funcName == "read") {
-				string tempname = "temp" + inttostr(innerCode.tempNum);
-				++innerCode.tempNum;
+		//if (build_in_function.find(funcName) != build_in_function.end()) {
+		//	if (funcName == "read") {
+		//		string tempname = "temp" + inttostr(innerCode.tempNum);
+		//		++innerCode.tempNum;
 
-				newNode = createTempVar(tempname, "int");
-				innerCode.addCode("READ " + tempname);
-			}
-			else if (funcName == "write") {
-				gramTree* argu_exp_list = post_exp->left->right->right;
-				if (argu_exp_list->left->name != "assignment_expression") {
-					error(argu_exp_list->left->line, "function write has just one parameter");
-				}
-				varNode rnode = praser_assignment_expression(argu_exp_list->left);
+		//		newNode = createTempVar(tempname, "int");
+		//		innerCode.addCode("READ " + tempname);
+		//	}
+		//	else if (funcName == "write") {
+		//		gramTree* argu_exp_list = post_exp->left->right->right;
+		//		if (argu_exp_list->left->name != "assignment_expression") {
+		//			error(argu_exp_list->left->line, "function write has just one parameter");
+		//		}
+		//		varNode rnode = praser_assignment_expression(argu_exp_list->left);
 
-				//判断是不是数组
-				if (rnode.useAddress) {
-					innerCode.addCode("WRITE *" + rnode.name);
-				}
-				else 
-					innerCode.addCode("WRITE " + innerCode.getNodeName(rnode));
+		//		//判断是不是数组
+		//		if (rnode.useAddress) {
+		//			innerCode.addCode("WRITE *" + rnode.name);
+		//		}
+		//		else 
+		//			innerCode.addCode("WRITE " + innerCode.getNodeName(rnode));
 
-				return rnode;
-			}
+		//		return rnode;
+		//	}
+		//}
+		if (funcPool.find(funcName) == funcPool.end()) {
+			error(post_exp->left->left->left->line, "Undefined function " + funcName);
+		}
+
+		if (post_exp->left->right->right->name == "argument_expression_list") {
+			gramTree* argument_exp_list = post_exp->left->right->right;
+			praser_argument_expression_list(argument_exp_list, funcName);
+			//cout << "funcCall" << endl;
+
+		}
+
+		funcNode func = funcPool[funcName];
+		
+		if (func.rtype == "void") {
+			innerCode.addCode("CALL " + funcName);
 		}
 		else {
-			if (funcPool.find(funcName) == funcPool.end()) {
-				error(post_exp->left->left->left->line, "Undefined function " + funcName);
-			}
-
-			if (post_exp->left->right->right->name == "argument_expression_list") {
-				gramTree* argument_exp_list = post_exp->left->right->right;
-				praser_argument_expression_list(argument_exp_list, funcName);
-				//cout << "funcCall" << endl;
-
-			}
 			string tempname = "temp" + inttostr(innerCode.tempNum);
 			++innerCode.tempNum;
 
 			newNode = createTempVar(tempname, funcPool[funcName].rtype);
 			innerCode.addCode(tempname + " := CALL " + funcName);
+
 		}
 
 		return newNode;

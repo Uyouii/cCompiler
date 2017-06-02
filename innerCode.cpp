@@ -122,5 +122,5 @@ string InnerCode::getarrayNodeName(arrayNode node) {
 }
 
 string InnerCode::getLabelName() {
-	return "LABEL" + inttostr(labelNum++);
+	return "label" + inttostr(labelNum++);
 }

@@ -1,0 +1,31 @@
+﻿  tree.cpp
+d:\ccompiler\tree.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  tools.cpp
+tools.cpp(6): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\stdio.h(1769): note: 参见“sprintf”的声明
+  Praser.cpp
+d:\ccompiler\tree.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+Praser.cpp(519): warning C4018: “<”: 有符号/无符号不匹配
+  innerCode.cpp
+d:\ccompiler\tree.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  block.cpp
+  正在生成代码...
+d:\ccompiler\praser.cpp(880): warning C4715: “Praser::praser_logical_and_expression”: 不是所有的控件路径都返回值
+d:\ccompiler\praser.cpp(125): warning C4715: “Praser::praser_expression”: 不是所有的控件路径都返回值
+d:\ccompiler\praser.cpp(828): warning C4715: “Praser::praser_assignment_expression”: 不是所有的控件路径都返回值
+d:\ccompiler\praser.cpp(855): warning C4715: “Praser::praser_logical_or_expression”: 不是所有的控件路径都返回值
+d:\ccompiler\praser.cpp(926): warning C4715: “Praser::praser_exclusive_or_expression”: 不是所有的控件路径都返回值
+d:\ccompiler\praser.cpp(950): warning C4715: “Praser::praser_and_expression”: 不是所有的控件路径都返回值
+d:\ccompiler\praser.cpp(979): warning C4715: “Praser::praser_equality_expression”: 不是所有的控件路径都返回值
+d:\ccompiler\praser.cpp(1009): warning C4715: “Praser::praser_relational_expression”: 不是所有的控件路径都返回值
+d:\ccompiler\praser.cpp(1040): warning C4715: “Praser::praser_shift_expression”: 不是所有的控件路径都返回值
+d:\ccompiler\praser.cpp(1063): warning C4715: “Praser::praser_additive_expression”: 不是所有的控件路径都返回值
+d:\ccompiler\praser.cpp(1089): warning C4715: “Praser::praser_multiplicative_expression”: 不是所有的控件路径都返回值
+d:\ccompiler\praser.cpp(1162): warning C4715: “Praser::praser_unary_expression”: 不是所有的控件路径都返回值
+d:\ccompiler\praser.cpp(903): warning C4715: “Praser::praser_inclusive_or_expression”: 不是所有的控件路径都返回值
+d:\ccompiler\praser.cpp(1379): warning C4715: “Praser::praser_primary_expression”: 不是所有的控件路径都返回值
+d:\ccompiler\praser.cpp(1304): warning C4715: “Praser::praser_postfix_expression”: 不是所有的控件路径都返回值
+Praser.obj : error LNK2001: 无法解析的外部符号 "struct gramTree * root" (?root@@3PAUgramTree@@A)
+tree.obj : error LNK2001: 无法解析的外部符号 "char * yytext" (?yytext@@3PADA)
+MSVCRTD.lib(exe_main.obj) : error LNK2019: 无法解析的外部符号 _main，该符号在函数 "int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ) 中被引用
+D:\cCompiler\Debug\cCompiler.exe : fatal error LNK1120: 3 个无法解析的外部命令
