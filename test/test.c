@@ -1,29 +1,9 @@
 
 
-
 int main() {
-    int a[10];
-    for(int i = 0; i < 10; i++) {
-        a[i] = i * i;
-        write(a[i]);
+    int n1 = 1,n2 =  1,n3 = 1,n4 = 1,n5 = 1,n6 = 1,n7 = 1;
+    int n = read(),i = 0;
+    for( i = 0;i < n;i++) {
+        write(i);
     }
 }
-
-// int fact(int n)
-// {
-//     if(n==1)
-//         return n;
-//     else
-//         return (n*fact(n-1));
-// }
-// int main()
-// {
-//     int m,result;
-//     m = read();
-//     if(m>1)
-//         result=fact(m);
-//     else
-//         result = 1;
-//     write(result);
-//     return 0;
-// }

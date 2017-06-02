@@ -16,6 +16,8 @@ struct varNode {
 	string type;
 	int num = -1;
 	bool useAddress = false;
+	bool isbool = false;
+	string boolString;
 };
 
 //º¯Êý½Úµã

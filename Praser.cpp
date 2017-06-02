@@ -155,7 +155,19 @@ void Praser::praser_selection_statement(struct gramTree* node) {
 
 			string label1 = innerCode.getLabelName();
 			string label2 = innerCode.getLabelName();
-			innerCode.addCode("IF " + innerCode.getNodeName(exp_rnode) + " != " + "#0 GOTO " + label1);
+
+			if (exp_rnode.isbool) {
+				innerCode.addCode("IF " + exp_rnode.boolString + " GOTO " + label1);
+			}
+			else {
+				string tempzeroname = "temp" + inttostr(innerCode.tempNum);
+				++innerCode.tempNum;
+				varNode newznode = createTempVar(tempzeroname, "int");
+				innerCode.addCode(tempzeroname + " := #0");
+
+				innerCode.addCode("IF " + innerCode.getNodeName(exp_rnode) + " != " + tempzeroname + " GOTO " + label1);
+			}
+			
 			innerCode.addCode("GOTO " + label2);
 			innerCode.addCode("LABEL " + label1 + " :");
 
@@ -181,7 +193,19 @@ void Praser::praser_selection_statement(struct gramTree* node) {
 			string label1 = innerCode.getLabelName();
 			string label2 = innerCode.getLabelName();
 			string label3 = innerCode.getLabelName();
-			innerCode.addCode("IF " + innerCode.getNodeName(exp_rnode) + " != " + "#0 GOTO " + label1);
+
+			if (exp_rnode.isbool) {
+				innerCode.addCode("IF " + exp_rnode.boolString + " GOTO " + label1);
+			}
+			else {
+				string tempzeroname = "temp" + inttostr(innerCode.tempNum);
+				++innerCode.tempNum;
+				varNode newznode = createTempVar(tempzeroname, "int");
+				innerCode.addCode(tempzeroname + " := #0");
+
+				innerCode.addCode("IF " + innerCode.getNodeName(exp_rnode) + " != " + tempzeroname + " GOTO " + label1);
+			}
+
 			innerCode.addCode("GOTO " + label2);
 			innerCode.addCode("LABEL " + label1 + " :");
 
@@ -232,7 +256,17 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 
 		varNode var = praser_expression(expression);
 
-		innerCode.addCode("IF " + innerCode.getNodeName(var) + " != " + "#0 GOTO " + label2);
+		if (var.isbool) {
+			innerCode.addCode("IF " + var.boolString + " GOTO " + label2);
+		}
+		else {
+			string tempzeroname = "temp" + inttostr(innerCode.tempNum);
+			++innerCode.tempNum;
+			varNode newznode = createTempVar(tempzeroname, "int");
+			innerCode.addCode(tempzeroname + " := #0");
+
+			innerCode.addCode("IF " + innerCode.getNodeName(var) + " != " + tempzeroname + " GOTO " + label2);
+		}
 		innerCode.addCode("GOTO " + label3);
 		innerCode.addCode("LABEL " + label2 + " :");
 
@@ -259,7 +293,7 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 		struct gramTree* expression = node->left->right->right->right->right;
 
 		string label1 = innerCode.getLabelName();
-		string label2 = innerCode.getLabelName();
+		/*string label2 = innerCode.getLabelName();*/
 
 		innerCode.addCode("LABEL " + label1 + " :");
 
@@ -267,9 +301,20 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 
 		varNode var = praser_expression(expression);
 
-		innerCode.addCode("IF " + innerCode.getNodeName(var) + " == " + "#0 GOTO " + label2);
-		innerCode.addCode("GOTO " + label1);
-		innerCode.addCode("LABEL " + label2 + " :");
+		if (var.isbool) {
+			innerCode.addCode("IF " + var.boolString + " GOTO " + label1);
+		}
+		else {
+			string tempzeroname = "temp" + inttostr(innerCode.tempNum);
+			++innerCode.tempNum;
+			varNode newznode = createTempVar(tempzeroname, "int");
+			innerCode.addCode(tempzeroname + " := #0");
+
+			innerCode.addCode("IF " + innerCode.getNodeName(var) + " != " + tempzeroname + " GOTO " + label1);
+		}
+
+		/*innerCode.addCode("GOTO " + label1);
+		innerCode.addCode("LABEL " + label2 + " :");*/
 
 		//如果需要break
 		if (blockStack.back().breakLabelNum > 0) {
@@ -305,7 +350,17 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 				varNode var;
 				if (exp_state2->left->name == "expression") {
 					var = praser_expression(exp_state2->left);
-					innerCode.addCode("IF " + innerCode.getNodeName(var) + " != " + "#0 GOTO " + label2);
+					if (var.isbool) {
+						innerCode.addCode("IF " + var.boolString + " GOTO " + label2);
+					}
+					else {
+						string tempzeroname = "temp" + inttostr(innerCode.tempNum);
+						++innerCode.tempNum;
+						varNode newznode = createTempVar(tempzeroname, "int");
+						innerCode.addCode(tempzeroname + " := #0");
+
+						innerCode.addCode("IF " + innerCode.getNodeName(var) + " != " + tempzeroname + " GOTO " + label2);
+					}
 				}
 				else {
 					innerCode.addCode("GOTO " + label2);
@@ -351,7 +406,18 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 				varNode var;
 				if (exp_state2->left->name == "expression") {
 					var = praser_expression(exp_state2->left);
-					innerCode.addCode("IF " + innerCode.getNodeName(var) + " != " + "#0 GOTO " + label2);
+
+					if (var.isbool) {
+						innerCode.addCode("IF " + var.boolString + " GOTO " + label2);
+					}
+					else {
+						string tempzeroname = "temp" + inttostr(innerCode.tempNum);
+						++innerCode.tempNum;
+						varNode newznode = createTempVar(tempzeroname, "int");
+						innerCode.addCode(tempzeroname + " := #0");
+
+						innerCode.addCode("IF " + innerCode.getNodeName(var) + " != " + tempzeroname + " GOTO " + label2);
+					}
 				}
 				else {
 					innerCode.addCode("GOTO " + label2);
@@ -397,8 +463,20 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 
 				varNode var;
 				if (expression_statement->left->name == "expression") {
+
 					var = praser_expression(expression_statement->left);
-					innerCode.addCode("IF " + innerCode.getNodeName(var) + " != " + "#0 GOTO " + label2);
+
+					if (var.isbool) {
+						innerCode.addCode("IF " + var.boolString + " GOTO " + label2);
+					}
+					else {
+						string tempzeroname = "temp" + inttostr(innerCode.tempNum);
+						++innerCode.tempNum;
+						varNode newznode = createTempVar(tempzeroname, "int");
+						innerCode.addCode(tempzeroname + " := #0");
+
+						innerCode.addCode("IF " + innerCode.getNodeName(var) + " != " + tempzeroname + " GOTO " + label2);
+					}
 				}
 				else {
 					innerCode.addCode("GOTO " + label2);
@@ -443,7 +521,18 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 				varNode var;
 				if (expression_statement->left->name == "expression") {
 					var = praser_expression(expression_statement->left);
-					innerCode.addCode("IF " + innerCode.getNodeName(var) + " != " + "#0 GOTO " + label2);
+
+					if (var.isbool) {
+						innerCode.addCode("IF " + var.boolString + " GOTO " + label2);
+					}
+					else {
+						string tempzeroname = "temp" + inttostr(innerCode.tempNum);
+						++innerCode.tempNum;
+						varNode newznode = createTempVar(tempzeroname, "int");
+						innerCode.addCode(tempzeroname + " := #0");
+
+						innerCode.addCode("IF " + innerCode.getNodeName(var) + " != " + tempzeroname + " GOTO " + label2);
+					}
 				}
 				else {
 					innerCode.addCode("GOTO " + label2);
@@ -983,7 +1072,11 @@ varNode Praser::praser_equality_expression(struct gramTree* equality_exp) {
 
 		varNode newnode = createTempVar(tempname, "bool");
 		blockStack.back().varMap.insert({ tempname,newnode});
-		innerCode.addCode(innerCode.createCodeforVar(tempname, op, node1, node2));
+		//innerCode.addCode(innerCode.createCodeforVar(tempname, op, node1, node2));
+
+		newnode.isbool = true;
+		newnode.boolString = innerCode.getNodeName(node1) + " " + op + " " + innerCode.getNodeName(node2);
+
 		return newnode;
 	}
 }
@@ -1012,7 +1105,11 @@ varNode Praser::praser_relational_expression(struct gramTree* relational_exp) {
 
 			varNode newnode = createTempVar(tempname, "bool");
 			blockStack.back().varMap.insert({ tempname,newnode });
-			innerCode.addCode(innerCode.createCodeforVar(tempname, op, node1, node2));
+			//innerCode.addCode(innerCode.createCodeforVar(tempname, op, node1, node2));
+
+			newnode.isbool = true;
+			newnode.boolString = innerCode.getNodeName(node1) + " " + op + " " + innerCode.getNodeName(node2);
+
 			return newnode;
 		}
 	}
@@ -1108,12 +1205,19 @@ varNode Praser::praser_unary_expression(struct gramTree*unary_exp) {
 		if (rnode.type != "int")
 			error(unary_exp->left->right->line, "++ operation can only use for int type.");
 
+		string tempname = "temp" + inttostr(innerCode.tempNum);
+		++innerCode.tempNum;
+		varNode newNode = createTempVar(tempname, "int");
+		blockStack.back().varMap.insert({ tempname,newNode });
+
+		innerCode.addCode(tempname + " := #1");
+
 		//变量储存的是地址
 		if (rnode.useAddress) {
-			innerCode.addCode("*" + rnode.name + " := *" + rnode.name + " + #1");
+			innerCode.addCode("*" + rnode.name + " := *" + rnode.name + " + " + tempname);
 		}
 		else {
-			innerCode.addCode(innerCode.getNodeName(rnode) + " := " + innerCode.getNodeName(rnode) + " + #1");
+			innerCode.addCode(innerCode.getNodeName(rnode) + " := " + innerCode.getNodeName(rnode) + " + "  + tempname);
 		}
 
 		return rnode;
@@ -1125,12 +1229,19 @@ varNode Praser::praser_unary_expression(struct gramTree*unary_exp) {
 		if (rnode.type != "int")
 			error(unary_exp->left->right->line, "-- operation can only use for int type.");
 
+		string tempname = "temp" + inttostr(innerCode.tempNum);
+		++innerCode.tempNum;
+		varNode newNode = createTempVar(tempname, "int");
+		blockStack.back().varMap.insert({ tempname,newNode });
+
+		innerCode.addCode(tempname + " := #1");
+
 		//变量储存的是地址
 		if (rnode.useAddress) {
-			innerCode.addCode("*" + rnode.name + " := *" + rnode.name + " - #1");
+			innerCode.addCode("*" + rnode.name + " := *" + rnode.name + " - " + tempname);
 		}
 		else {
-			innerCode.addCode(innerCode.getNodeName(rnode) + " := " + innerCode.getNodeName(rnode) + " - #1");
+			innerCode.addCode(innerCode.getNodeName(rnode) + " := " + innerCode.getNodeName(rnode) + " - " + tempname);
 		}
 
 		return rnode;
@@ -1140,13 +1251,13 @@ varNode Praser::praser_unary_expression(struct gramTree*unary_exp) {
 		varNode rnode = praser_unary_expression(unary_exp->left->right);
 		if (op == "+") {
 
-			if (rnode.type != "int" || rnode.type != "double")
+			if (rnode.type != "int" && rnode.type != "double")
 				error(unary_exp->left->left->line, "operator '+' can only used to int or double");
 			return rnode;
 		}
 		else if (op == "-") {
 
-			if (rnode.type != "int" || rnode.type != "double")
+			if (rnode.type != "int" && rnode.type != "double")
 				error(unary_exp->left->left->line, "operator '-' can only used to int or double");
 
 			string tempname = "temp" + inttostr(innerCode.tempNum);
@@ -1283,14 +1394,21 @@ varNode Praser::praser_postfix_expression(struct gramTree* post_exp) {
 		varNode newnode = createTempVar(tempname, "int");
 		blockStack.back().varMap.insert({ tempname,newnode });
 
+		string tempnameone = "temp" + inttostr(innerCode.tempNum);
+		++innerCode.tempNum;
+		varNode newNode = createTempVar(tempnameone, "int");
+		blockStack.back().varMap.insert({ tempnameone,newNode });
+
+		innerCode.addCode(tempnameone + " := #1");
+
 		//变量储存的是地址
 		if (rnode.useAddress) {
 			innerCode.addCode(tempname + " := *" + rnode.name);
-			innerCode.addCode("*" + rnode.name + " := *" + rnode.name + " + #1");
+			innerCode.addCode("*" + rnode.name + " := *" + rnode.name + " + " + tempnameone);
 		}
 		else {
 			innerCode.addCode(tempname += " := " + innerCode.getNodeName(rnode));
-			innerCode.addCode(innerCode.getNodeName(rnode) +  " := " + innerCode.getNodeName(rnode) + " + #1");
+			innerCode.addCode(innerCode.getNodeName(rnode) +  " := " + innerCode.getNodeName(rnode) + " + " + tempnameone);
 		}
 
 		return newnode;
@@ -1307,14 +1425,21 @@ varNode Praser::praser_postfix_expression(struct gramTree* post_exp) {
 		varNode newnode = createTempVar(tempname, "int");
 		blockStack.back().varMap.insert({ tempname,newnode });
 
+		string tempnameone = "temp" + inttostr(innerCode.tempNum);
+		++innerCode.tempNum;
+		varNode newNode = createTempVar(tempnameone, "int");
+		blockStack.back().varMap.insert({ tempnameone,newNode });
+
+		innerCode.addCode(tempnameone + " := #1");
+
 		//变量储存的是地址
 		if (rnode.useAddress) {
 			innerCode.addCode(tempname + " := *" + rnode.name);
-			innerCode.addCode("*" + rnode.name + " := *" + rnode.name + " - #1");
+			innerCode.addCode("*" + rnode.name + " := *" + rnode.name + " - " + tempnameone);
 		}
 		else {
 			innerCode.addCode(tempname += " := " + innerCode.getNodeName(rnode));
-			innerCode.addCode(innerCode.getNodeName(rnode) + " := " + innerCode.getNodeName(rnode) + " - #1");
+			innerCode.addCode(innerCode.getNodeName(rnode) + " := " + innerCode.getNodeName(rnode) + " - " + tempnameone);
 		}
 
 		return newnode;
