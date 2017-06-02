@@ -18,13 +18,13 @@ void Praser::praserInit() {
 	blockStack.push_back(wholeBlock);
 
 	funcNode writeNode;
-	writeNode.name = "write";
+	writeNode.name = "print";
 	writeNode.rtype = "void";
 	varNode pnode;
 	pnode.type = "int";
 	writeNode.paralist.push_back(pnode);
 
-	funcPool.insert({ "write", writeNode });
+	funcPool.insert({ "print", writeNode });
 
 	funcNode readNode;
 	readNode.name = "read";
@@ -1072,7 +1072,7 @@ varNode Praser::praser_equality_expression(struct gramTree* equality_exp) {
 
 		varNode newnode = createTempVar(tempname, "bool");
 		blockStack.back().varMap.insert({ tempname,newnode});
-		//innerCode.addCode(innerCode.createCodeforVar(tempname, op, node1, node2));
+		innerCode.addCode(innerCode.createCodeforVar(tempname, op, node1, node2));
 
 		newnode.isbool = true;
 		newnode.boolString = innerCode.getNodeName(node1) + " " + op + " " + innerCode.getNodeName(node2);
@@ -1105,7 +1105,7 @@ varNode Praser::praser_relational_expression(struct gramTree* relational_exp) {
 
 			varNode newnode = createTempVar(tempname, "bool");
 			blockStack.back().varMap.insert({ tempname,newnode });
-			//innerCode.addCode(innerCode.createCodeforVar(tempname, op, node1, node2));
+			innerCode.addCode(innerCode.createCodeforVar(tempname, op, node1, node2));
 
 			newnode.isbool = true;
 			newnode.boolString = innerCode.getNodeName(node1) + " " + op + " " + innerCode.getNodeName(node2);
