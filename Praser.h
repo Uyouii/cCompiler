@@ -70,6 +70,8 @@ private:
 	string getArrayType(string);
 	struct arrayNode getArrayNode(string);
 
+	int getBreakBlockNumber();
+
 	struct varNode createTempVar(string name, string type);
 
 

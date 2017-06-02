@@ -28,7 +28,6 @@ string InnerCode::createCodeforVar(string tempname, string op, varNode node1, va
 		else result += "var" + inttostr(node1.num);
 	}
 	
-
 	result += " " + op + " ";
 
 	if (node2.useAddress) {
@@ -77,27 +76,45 @@ string InnerCode::createCodeforParameter(varNode node) {
 
 string InnerCode::createCodeforReturn(varNode node) {
 	string result = "RETURN ";
-	if (node.num < 0) {
-		result += node.name;
+	if (node.useAddress) {
+		result += "*" + node.name;
 	}
-	else result += "var" + inttostr(node.num);
+	else {
+		if (node.num < 0) {
+			result += node.name;
+		}
+		else result += "var" + inttostr(node.num);
+	}
+	
 	return result;
 }
 
 string InnerCode::createCodeforArgument(varNode node) {
 	string result = "ARG ";
-	if (node.num < 0) {
-		result += node.name;
+	if (node.useAddress) {
+		result += "*" + node.name;
+	} 
+	else {
+		if (node.num < 0) {
+			result += node.name;
+		}
+		else result += "var" + inttostr(node.num);
 	}
-	else result += "var" + inttostr(node.num);
+	
 	return result;
 }
 
 string InnerCode::getNodeName(varNode node) {
-	if (node.num < 0) {
-		return node.name;
+	if (node.useAddress) {
+		return "*" + node.name;
 	}
-	else return ("var" + inttostr(node.num));
+	else {
+		if (node.num < 0) {
+			return node.name;
+		}
+		else return ("var" + inttostr(node.num));
+	}
+
 }
 
 string InnerCode::getarrayNodeName(arrayNode node) {
