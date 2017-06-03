@@ -1,4 +1,5 @@
 #include "innerCode.h"
+#include "codeOptimize.h"
 #include "tools.h"
 
 InnerCode::InnerCode() {
@@ -10,6 +11,10 @@ void InnerCode::addCode(string str) {
 }
 
 void InnerCode::printCode() {
+
+	Optimize optimize(codeList);
+	codeList = optimize.getCodeList();
+
 	cout << "\n===============INNERCODE===============" << endl;
 	for (string s : codeList) {
 		cout << s << endl;

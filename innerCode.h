@@ -4,6 +4,7 @@
 #include <iostream>
 #include "tree.h"
 #include "block.h"
+#include "codeOptimize.h"
 #include<string>
 extern struct gramTree* root;
 

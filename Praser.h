@@ -6,15 +6,13 @@
 #include <vector>
 #include <set>
 
-extern struct gramTree* root;
-
 
 using namespace std;
 
 class Praser {
 public:
 
-	Praser();	//构造函数
+	Praser(gramTree*);	//构造函数
 	~Praser();	//析构函数
 
 private:
@@ -22,6 +20,8 @@ private:
 	vector<Block> blockStack;				//维护的栈
 	InnerCode innerCode;					//中间代码生成工具
 	//set<string> build_in_function;
+
+	struct gramTree* root;
 
 	void praserInit();
 	void praserGramTree(struct gramTree* node);

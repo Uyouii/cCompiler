@@ -4,7 +4,8 @@
 #include<map>
 using namespace std;
 
-Praser::Praser() {
+Praser::Praser(gramTree* root) {
+	this->root = root;
 	praserInit();
 }
 
