@@ -6,10 +6,10 @@ using namespace std;
 Optimize::Optimize(vector<string> codelist) {
 	//this->codelist = codelist;
 	establishMap(codelist);
-	dropTrumpTemp();
+	dropTrumpTemp(codelist);
 }
 
-void Optimize::dropTrumpTemp() {
+void Optimize::dropTrumpTemp(vector<string>& codelist) {
 	set<int> lines;
 	for (auto p = tempMessage.begin(); p != tempMessage.end(); p++) {
 		//cout << p->first << " " << p->second.num << endl;
@@ -52,5 +52,5 @@ void Optimize::establishMap(vector<string>& codelist) {
 }
 
 vector<string> Optimize::getCodeList() {
-	return codelist;
+	return this->codelist;
 }

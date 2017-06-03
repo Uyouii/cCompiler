@@ -16,7 +16,7 @@ private:
 	map<string, Message> tempMessage;
 
 	void establishMap(vector<string>&);
-	void dropTrumpTemp();			//除去无用的临时变量
+	void dropTrumpTemp(vector<string>&);			//除去无用的临时变量
 
 public:
 	Optimize(vector<string>);
