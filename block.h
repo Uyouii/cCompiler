@@ -16,7 +16,6 @@ struct varNode {
 	string type;
 	int num = -1;
 	bool useAddress = false;
-	bool isbool = false;
 	string boolString;
 };
 
@@ -28,13 +27,12 @@ struct funcNode {
 	vector<varNode> paralist;	//记录形参列表
 };
 
+//数组节点
 struct arrayNode {
 	string name;
 	string type;
 	int num = -1;
 };
-
-//数组节点
 
 
 //block的内容

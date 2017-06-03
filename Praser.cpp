@@ -17,6 +17,7 @@ void Praser::praserInit() {
 	Block wholeBlock;
 	blockStack.push_back(wholeBlock);
 
+	//事先内置函数print和read
 	funcNode writeNode;
 	writeNode.name = "print";
 	writeNode.rtype = "void";
@@ -156,7 +157,7 @@ void Praser::praser_selection_statement(struct gramTree* node) {
 			string label1 = innerCode.getLabelName();
 			string label2 = innerCode.getLabelName();
 
-			if (exp_rnode.isbool) {
+			if (exp_rnode.type == "bool") {
 				innerCode.addCode("IF " + exp_rnode.boolString + " GOTO " + label1);
 			}
 			else {
@@ -194,7 +195,7 @@ void Praser::praser_selection_statement(struct gramTree* node) {
 			string label2 = innerCode.getLabelName();
 			string label3 = innerCode.getLabelName();
 
-			if (exp_rnode.isbool) {
+			if (exp_rnode.type == "bool") {
 				innerCode.addCode("IF " + exp_rnode.boolString + " GOTO " + label1);
 			}
 			else {
@@ -256,7 +257,7 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 
 		varNode var = praser_expression(expression);
 
-		if (var.isbool) {
+		if (var.type == "bool") {
 			innerCode.addCode("IF " + var.boolString + " GOTO " + label2);
 		}
 		else {
@@ -301,7 +302,7 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 
 		varNode var = praser_expression(expression);
 
-		if (var.isbool) {
+		if (var.type == "bool") {
 			innerCode.addCode("IF " + var.boolString + " GOTO " + label1);
 		}
 		else {
@@ -350,7 +351,7 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 				varNode var;
 				if (exp_state2->left->name == "expression") {
 					var = praser_expression(exp_state2->left);
-					if (var.isbool) {
+					if (var.type == "bool") {
 						innerCode.addCode("IF " + var.boolString + " GOTO " + label2);
 					}
 					else {
@@ -407,7 +408,7 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 				if (exp_state2->left->name == "expression") {
 					var = praser_expression(exp_state2->left);
 
-					if (var.isbool) {
+					if (var.type == "bool") {
 						innerCode.addCode("IF " + var.boolString + " GOTO " + label2);
 					}
 					else {
@@ -466,7 +467,7 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 
 					var = praser_expression(expression_statement->left);
 
-					if (var.isbool) {
+					if (var.type == "bool") {
 						innerCode.addCode("IF " + var.boolString + " GOTO " + label2);
 					}
 					else {
@@ -522,7 +523,7 @@ void Praser::praser_iteration_statement(struct gramTree* node) {
 				if (expression_statement->left->name == "expression") {
 					var = praser_expression(expression_statement->left);
 
-					if (var.isbool) {
+					if (var.type == "bool") {
 						innerCode.addCode("IF " + var.boolString + " GOTO " + label2);
 					}
 					else {
@@ -770,7 +771,17 @@ void Praser::praser_init_declarator(string vartype, struct gramTree* node) {
 					tnode = createTempVar(tempname, "int");
 
 					blockStack.back().varMap.insert({ tempname,tnode });
-					innerCode.addCode(tnode.name + " := #4 * " + rnode.name);
+
+					varNode tempVar3;
+					string tempName3 = "temp" + inttostr(innerCode.tempNum);
+					++innerCode.tempNum;
+					tempVar3.name = tempName3;
+					tempVar3.type = "int";
+					blockStack.back().varMap.insert({ tempName3,tempVar3 });
+
+					innerCode.addCode(tempName3 + " := #4");
+
+					innerCode.addCode(tnode.name + " := " + tempName3 +" * " + rnode.name);
 				}
 				else if (arrayType == "double") {
 					//创建一个新的临时变量来储存数组的大小
@@ -779,9 +790,19 @@ void Praser::praser_init_declarator(string vartype, struct gramTree* node) {
 					tnode = createTempVar(tempname, "int");
 
 					blockStack.back().varMap.insert({ tempname,tnode });
-					innerCode.addCode(tnode.name + " := #8 * " + rnode.name);
+					
+					varNode tempVar3;
+					string tempName3 = "temp" + inttostr(innerCode.tempNum);
+					++innerCode.tempNum;
+					tempVar3.name = tempName3;
+					tempVar3.type = "int";
+					blockStack.back().varMap.insert({ tempName3,tempVar3 });
+
+					innerCode.addCode(tempName3 + " := #8");
+
+					innerCode.addCode(tnode.name + " := " + tempName3 + " * " + rnode.name);
 				}
-				else if (arrayType == "double") {
+				else if (arrayType == "bool") {
 					tnode = rnode;
 				}
 				
@@ -1074,7 +1095,6 @@ varNode Praser::praser_equality_expression(struct gramTree* equality_exp) {
 		blockStack.back().varMap.insert({ tempname,newnode});
 		innerCode.addCode(innerCode.createCodeforVar(tempname, op, node1, node2));
 
-		newnode.isbool = true;
 		newnode.boolString = innerCode.getNodeName(node1) + " " + op + " " + innerCode.getNodeName(node2);
 
 		return newnode;
@@ -1107,7 +1127,6 @@ varNode Praser::praser_relational_expression(struct gramTree* relational_exp) {
 			blockStack.back().varMap.insert({ tempname,newnode });
 			innerCode.addCode(innerCode.createCodeforVar(tempname, op, node1, node2));
 
-			newnode.isbool = true;
 			newnode.boolString = innerCode.getNodeName(node1) + " " + op + " " + innerCode.getNodeName(node2);
 
 			return newnode;
@@ -1321,10 +1340,32 @@ varNode Praser::praser_postfix_expression(struct gramTree* post_exp) {
 			tempVar2.name = tempName2;
 			tempVar2.type = "int";
 			blockStack.back().varMap.insert({ tempName2,tempVar2 });
+
 			if (anode.type == "int") {
-				innerCode.addCode(tempName2 + " := " + innerCode.getNodeName(enode) + " * #4");
+
+				varNode tempVar3;
+				string tempName3 = "temp" + inttostr(innerCode.tempNum);
+				++innerCode.tempNum;
+				tempVar3.name = tempName3;
+				tempVar3.type = "int";
+				blockStack.back().varMap.insert({ tempName3,tempVar3 });
+
+				innerCode.addCode(tempName3 + " := #4");
+
+				innerCode.addCode(tempName2 + " := " + innerCode.getNodeName(enode) + " * " + tempName3);
 			}
-			else innerCode.addCode(tempName2 + " := " + innerCode.getNodeName(enode) + " * #8");
+			else if (anode.type == "double") {
+				varNode tempVar3;
+				string tempName3 = "temp" + inttostr(innerCode.tempNum);
+				++innerCode.tempNum;
+				tempVar3.name = tempName3;
+				tempVar3.type = "int";
+				blockStack.back().varMap.insert({ tempName3,tempVar3 });
+
+				innerCode.addCode(tempName3 + " := #8");
+
+				innerCode.addCode(tempName2 + " := " + innerCode.getNodeName(enode) + " * " + tempName3);
+			}
 
 			innerCode.addCode(tempName + " := &" + innerCode.getarrayNodeName(anode) + " + " + innerCode.getNodeName(tempVar2));
 			return tempVar;

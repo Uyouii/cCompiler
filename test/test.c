@@ -1,6 +1,8 @@
 int main() {
-    int x = -0x11;
-    int a[10];
-    a[1] = x;
-    print(a[1]);
+    int a = read();
+    while(a >= 0) {
+        print(a);
+        a--;
+    }
+    return 0;
 }
