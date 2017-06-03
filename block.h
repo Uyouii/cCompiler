@@ -42,7 +42,7 @@ public:
 	bool isfunc = false;//记录是否是函数
 	map<string, struct varNode> varMap;		//变量的map
 	map<string, struct arrayNode> arrayMap;	//数组的map
-	int breakLabelNum = -1;
+	string breakLabelname;
 	bool canBreak = false;
 };
 

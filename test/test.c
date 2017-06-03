@@ -1,8 +1,9 @@
 int main() {
     int a = read();
-    while(a >= 0) {
-        print(a);
+    do{
         a--;
-    }
+        if(a <= 0)
+            break;
+    }while(1 > 0);
     return 0;
 }
