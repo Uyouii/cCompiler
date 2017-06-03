@@ -37,16 +37,23 @@ void Optimize::establishMap(vector<string>& codelist) {
 			string name = str.substr(w, end - w);
 
 			if (tempMessage.find(name) != tempMessage.end()) {
+				if (str.find("CALL") != string::npos)
+					tempMessage[name].num += 1000;
 				tempMessage[name].num++;
 			}
 			else {
 				Message m;
 				m.line = i;
 				m.num = 1;
+				if (str.find("CALL") != string::npos)
+					m.num += 1000;
 				tempMessage.insert({ name,m });
 			}
 			begin = end;
 			w = str.find("temp", begin);
+
+
+
 		}
 	}
 }

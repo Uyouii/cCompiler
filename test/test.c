@@ -1,9 +1,4 @@
 int main() {
-    int a = read();
-    do{
-        a--;
-        if(a <= 0)
-            break;
-    }while(a > 0);
-    return 0;
+    if( (2 > 3) || (3 < 4))
+        return 1;
 }

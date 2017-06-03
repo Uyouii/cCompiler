@@ -19,6 +19,7 @@ void InnerCode::printCode() {
 	for (string s : codeList) {
 		cout << s << endl;
 	}
+
 }
 
 string InnerCode::createCodeforVar(string tempname, string op, varNode node1, varNode node2) {

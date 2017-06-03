@@ -969,6 +969,9 @@ varNode Praser::praser_logical_or_expression(struct gramTree* logical_or_exp) {
 
 		blockStack.back().varMap.insert({ tempname,newnode });
 		innerCode.addCode(innerCode.createCodeforVar(tempname, "||", node1, node2));
+
+		newnode.boolString = innerCode.getNodeName(node1) + " || " + innerCode.getNodeName(node2);
+
 		return newnode;
 
 	}
@@ -995,6 +998,9 @@ varNode Praser::praser_logical_and_expression(struct gramTree* logical_and_exp) 
 		blockStack.back().varMap.insert({ tempname,newnode });
 	
 		innerCode.addCode(innerCode.createCodeforVar(tempname, "&&", node1, node2));
+
+		newnode.boolString = innerCode.getNodeName(node1) + " && " + innerCode.getNodeName(node2);
+
 		return newnode;
 
 	}
@@ -1379,31 +1385,7 @@ varNode Praser::praser_postfix_expression(struct gramTree* post_exp) {
 		//函数调用
 		string funcName = post_exp->left->left->left->content;
 		varNode newNode;
-		//if (build_in_function.find(funcName) != build_in_function.end()) {
-		//	if (funcName == "read") {
-		//		string tempname = "temp" + inttostr(innerCode.tempNum);
-		//		++innerCode.tempNum;
-
-		//		newNode = createTempVar(tempname, "int");
-		//		innerCode.addCode("READ " + tempname);
-		//	}
-		//	else if (funcName == "write") {
-		//		gramTree* argu_exp_list = post_exp->left->right->right;
-		//		if (argu_exp_list->left->name != "assignment_expression") {
-		//			error(argu_exp_list->left->line, "function write has just one parameter");
-		//		}
-		//		varNode rnode = praser_assignment_expression(argu_exp_list->left);
-
-		//		//判断是不是数组
-		//		if (rnode.useAddress) {
-		//			innerCode.addCode("WRITE *" + rnode.name);
-		//		}
-		//		else 
-		//			innerCode.addCode("WRITE " + innerCode.getNodeName(rnode));
-
-		//		return rnode;
-		//	}
-		//}
+		
 		if (funcPool.find(funcName) == funcPool.end()) {
 			error(post_exp->left->left->left->line, "Undefined function " + funcName);
 		}

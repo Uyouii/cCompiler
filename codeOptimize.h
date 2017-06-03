@@ -15,8 +15,8 @@ private:
 	vector<string> codelist;
 	map<string, Message> tempMessage;
 
-	void establishMap(vector<string>&);
-	void dropTrumpTemp(vector<string>&);			//除去无用的临时变量
+	void establishMap(vector<string>&);			//建立temp和次数，行数的map
+	void dropTrumpTemp(vector<string>&);		//除去无用的临时变量
 
 public:
 	Optimize(vector<string>);

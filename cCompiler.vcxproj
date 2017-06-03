@@ -98,6 +98,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="block.cpp" />
+    <ClCompile Include="codeOptimize.cpp" />
     <ClCompile Include="innerCode.cpp" />
     <ClCompile Include="Praser.cpp" />
     <ClCompile Include="tools.cpp" />
@@ -105,6 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="block.h" />
+    <ClInclude Include="codeOptimize.h" />
     <ClInclude Include="innerCode.h" />
     <ClInclude Include="Praser.h" />
     <ClInclude Include="tools.h" />
