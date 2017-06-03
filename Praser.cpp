@@ -1260,16 +1260,23 @@ varNode Praser::praser_unary_expression(struct gramTree*unary_exp) {
 			if (rnode.type != "int" && rnode.type != "double")
 				error(unary_exp->left->left->line, "operator '-' can only used to int or double");
 
+			string tempzeroname = "temp" + inttostr(innerCode.tempNum);
+			++innerCode.tempNum;
+			varNode newzeronode = createTempVar(tempzeroname, rnode.type);
+			blockStack.back().varMap.insert({ tempzeroname,newzeronode });
+			innerCode.addCode(tempzeroname + " := #0");
+
 			string tempname = "temp" + inttostr(innerCode.tempNum);
 			++innerCode.tempNum;
 			varNode newnode = createTempVar(tempname, rnode.type);
 			blockStack.back().varMap.insert({ tempname,newnode });
 
+
 			if (rnode.useAddress) {
-				innerCode.addCode(tempname + " := #0 - *" + rnode.name);
+				innerCode.addCode(tempname + " := " + tempzeroname + " - *" + rnode.name);
 			}
 			else {
-				innerCode.addCode(tempname + " := #0 - " + innerCode.getNodeName(rnode));
+				innerCode.addCode(tempname + " := " + tempzeroname + " - " + innerCode.getNodeName(rnode));
 			}
 			return newnode;
 		}

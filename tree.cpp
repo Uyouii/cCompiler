@@ -1,4 +1,5 @@
 #include"tree.h"
+#include"tools.h"
 
 gramTree* create_tree(string name, int num,...) {
     va_list valist;
@@ -34,7 +35,7 @@ gramTree* create_tree(string name, int num,...) {
     else {
         int line = va_arg(valist,int);
         head->line = line;
-       /* if(head->name == "CONSTANT_INT") {
+        if(head->name == "CONSTANT_INT") {
            int value;
            if(strlen(yytext) > 1 && yytext[0] == '0' && yytext[1] != 'x') {
                sscanf(yytext,"%o",&value); //8进制整数
@@ -43,23 +44,24 @@ gramTree* create_tree(string name, int num,...) {
                sscanf(yytext,"%x",&value); //16进制整数
            }
            else value = atoi(yytext);      //10进制整数
-           head->int_value = value;
+           head->content = inttostr(value);
            //printf("%d",value);
         }
         else if(head->name == "CONSTANT_DOUBLE") {
-           head->double_value=atof(yytext);
+           head->content = yytext;
         }
         else if(head->name == "TRUE") {
-           head->int_value = 1;
+           head->content = inttostr(1);
         }
         else if(head->name == "FALSE") {
-           head->int_value = 0;
+           head->content = inttostr(0);
         }
         else if(head->name == "STRING_LITERAL") {
-           head->string_value = my_substring(yytext,1,strlen(yytext) - 1);
-        }*/
-
-        head->content = yytext;
+           head->content = yytext;
+        }
+        else {
+            head->content = yytext;
+        }
     
     }
     return head;
