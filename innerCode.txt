@@ -1,0 +1,48 @@
+FUNCTION fact :
+PARAM var0
+temp0 := #1
+IF var0 == temp0 GOTO label0
+GOTO label1
+LABEL label0 :
+RETURN var0
+GOTO label2
+LABEL label1 :
+temp2 := #1
+temp3 := var0 - temp2
+ARG temp3
+temp4 := CALL fact
+temp5 := var0 * temp4
+var1 := temp5
+RETURN var1
+LABEL label2 :
+FUNCTION main :
+temp6 := CALL read
+var3 := temp6
+temp7 := #0
+var4 := temp7
+LABEL label3 :
+IF var4 < var3 GOTO label4
+GOTO label5
+LABEL label4 :
+temp9 := CALL read
+var5 := temp9
+temp10 := #1
+IF var5 > temp10 GOTO label6
+GOTO label7
+LABEL label6 :
+ARG var5
+temp12 := CALL fact
+var2 := temp12
+GOTO label8
+LABEL label7 :
+temp13 := #1
+var2 := temp13
+LABEL label8 :
+ARG var2
+CALL print
+temp15 := #1
+var4 := var4 + temp15
+GOTO label3
+LABEL label5 :
+temp16 := #0
+RETURN temp16

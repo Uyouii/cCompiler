@@ -2272,7 +2272,7 @@ int main(int argc,char* argv[]) {
 	//freopen("output/output.txt","w", stdout);
 	yyparse();
 	printf("\n");
-	//eval(root,0);	//输出语法分析树
+	eval(root,0);	//输出语法分析树
 
 	Praser praser(root);
 

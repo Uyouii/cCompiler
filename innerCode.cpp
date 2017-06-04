@@ -1,6 +1,7 @@
 #include "innerCode.h"
 #include "codeOptimize.h"
 #include "tools.h"
+#include <fstream>
 
 InnerCode::InnerCode() {
 
@@ -14,12 +15,13 @@ void InnerCode::printCode() {
 
 	Optimize optimize(codeList);
 	codeList = optimize.getCodeList();
+	ofstream out("innerCode.txt");
 
 	cout << "\n===============INNERCODE===============" << endl;
 	for (string s : codeList) {
 		cout << s << endl;
+		out << s << "\n";
 	}
-
 }
 
 string InnerCode::createCodeforVar(string tempname, string op, varNode node1, varNode node2) {
