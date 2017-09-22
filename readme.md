@@ -3,7 +3,7 @@
 lex和yacc编写的c语言编译器
 
 词法分析与语法分析的原始文件来源于：http://www.quut.com/c/ANSI-C-grammar-l-1998.html
-和 http://www.quut.com/c/ANSI-C-grammar-l-1998.html
+和 http://www.quut.com/c/ANSI-C-grammar-y-1995.html
 
 实现了C语言除了struct和指针几乎所有的语法。
 
